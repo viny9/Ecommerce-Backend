@@ -16,13 +16,13 @@ datasource db {
 model User {
   id String @id
   name String 
-  email String
+  email String @unique
   phone String
   is_admin Boolean
   stripe_id String
   address_id String
   card_id String
   created_at DateTime
-  deleted_at DateTime
+  deleted_at DateTime @ignore
   password String
 }
