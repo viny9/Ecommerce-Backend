@@ -9,20 +9,20 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
   id String @id
   name String 
-  email String
+  email String @unique
   phone String
-  is_admin Boolean
+  is_admin Boolean @default(false)
   stripe_id String
   address_id String
   card_id String
   created_at DateTime
-  deleted_at DateTime
+  deleted_at DateTime?
   password String
 }
