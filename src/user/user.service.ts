@@ -1,26 +1,55 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserRepository } from 'src/database/repositorys/user-repository';
+import { UserDetailsDto } from './dto/user-details.dto';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private repository: UserRepository) {}
+
+  async create(user: CreateUserDto) {
+    const { id, email, name, phone, is_admin } =
+      await this.repository.create(user);
+
+    return new UserDetailsDto(id, email, name, phone, is_admin);
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll() {
+    const users = await this.repository.findAll();
+
+    return users.map((user: User) => {
+      return new UserDetailsDto(
+        user.id,
+        user.email,
+        user.name,
+        user.phone,
+        user.is_admin,
+      );
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(userId: string) {
+    const { id, email, name, phone, is_admin } =
+      await this.repository.findOne(userId);
+
+    return new UserDetailsDto(id, email, name, phone, is_admin);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(userId: string, updateUserDto: UpdateUserDto) {
+    const { id, email, name, phone, is_admin } = await this.repository.update(
+      userId,
+      updateUserDto,
+    );
+
+    return new UserDetailsDto(id, email, name, phone, is_admin);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(userId: string) {
+    const { id, email, name, phone, is_admin } =
+      await this.repository.remove(userId);
+
+    return new UserDetailsDto(id, email, name, phone, is_admin);
   }
 }
