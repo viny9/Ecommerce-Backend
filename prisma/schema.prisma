@@ -14,15 +14,182 @@ datasource db {
 }
 
 model User {
-  id String @id
-  name String 
-  email String @unique
-  phone String
-  is_admin Boolean @default(false)
-  stripe_id String
-  address_id String
-  card_id String
-  created_at DateTime
-  deleted_at DateTime?
-  password String
+  id        String    @id
+  name      String
+  email     String    @unique
+  phone     String
+  card      String
+  password  String
+  isAdmin   Boolean   @default(false)
+  stripeId  String
+  cart      Cart?
+  list      List?
+  address   Address?
+  Order     Order[]
+  createdAt DateTime @default(now())  
+  updatedAt DateTime
+  deletedAt DateTime?
+}
+
+model Address {
+  id           String  @id
+  cep          String
+  city         String
+  state        String
+  extra        String?
+  number       Int
+  neighborhood String
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  orderId String @unique
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime
+  deletedAt DateTime?
+}
+
+model Cart {
+  id        String     @id
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id])
+  orderId   String     @unique
+  order     Order      @relation(fields: [orderId], references: [id])
+  products  CartItem[]
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime
+  deletedAt DateTime?
+}
+
+model List {
+  id        String     @id
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id])
+  products  ListItem[]
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime
+  deletedAt DateTime?
+}
+
+model CartItem {
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  cartId String
+  cart   Cart   @relation(fields: [cartId], references: [id])
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime
+  deletedAt DateTime?
+
+  @@id([productId, cartId])
+}
+
+model ListItem {
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  listId String
+  list   List   @relation(fields: [listId], references: [id])
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime
+  deletedAt DateTime?
+
+  @@id([productId, listId])
+}
+
+model Product {
+  id    String       @id
+  name  String
+  price String
+  imgs  ProductImg[]
+  cart  CartItem[]
+  list  ListItem[]
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime
+  deletedAt DateTime?
+}
+
+model Category {
+  id        String    @id
+  name      String
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime
+  deletedAt DateTime?
+}
+
+model Promotion {
+  id          String    @id
+  name        String
+  percentage  Float
+  startAt     DateTime
+  endAt       DateTime
+  description String
+  createdAt   DateTime
+  updatedAt DateTime
+  deletedAt   DateTime?
+}
+
+model ProductImg {
+  id        String    @id
+  imgUrl    String
+  productId String
+  product   Product   @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime
+  deletedAt DateTime?
+}
+
+model Order {
+  id            String        @unique
+  amountTotal   Float
+  paymentMethod String
+  paymentStatus String
+  shippingCost  Float
+  installments  Int?
+  address       Address?
+  cart Cart?
+  product Product[]
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  
+  notification  Notification?
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime
+  deletedAt DateTime?
+}
+
+model Card {
+  id             String    @unique
+  lastFourNumber Int
+  expMounth      Int
+  expYear        Int
+  brand          String
+  createdAt      DateTime
+  updatedAt DateTime
+  deletedAt      DateTime?
+}
+
+model Notification {
+  id         String   @id
+  orderAt    DateTime
+  message    String
+  isCheck    Boolean
+  isArchived Boolean
+
+  orderId String @unique
+  Order   Order? @relation(fields: [orderId], references: [id])
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime
+  deletedAt DateTime?
 }
