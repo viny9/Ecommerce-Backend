@@ -18,16 +18,16 @@ model User {
   name      String
   email     String    @unique
   phone     String
-  card      String
   password  String
   isAdmin   Boolean   @default(false)
   stripeId  String
+  card      Card?
   cart      Cart?
   list      List?
   address   Address?
   Order     Order[]
-  createdAt DateTime @default(now())  
-  updatedAt DateTime
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
   deletedAt DateTime?
 }
 
@@ -40,36 +40,41 @@ model Address {
   number       Int
   neighborhood String
 
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id])
 
-  orderId String @unique
-  order   Order  @relation(fields: [orderId], references: [id])
+  orderId String? @unique
+  order   Order?  @relation(fields: [orderId], references: [id])
 
-  createdAt DateTime @default(now()) 
-  updatedAt DateTime
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
   deletedAt DateTime?
 }
 
 model Cart {
-  id        String     @id
-  userId    String     @unique
-  user      User       @relation(fields: [userId], references: [id])
-  orderId   String     @unique
-  order     Order      @relation(fields: [orderId], references: [id])
+  id String @id
+
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id])
+
+  orderId String? @unique
+  order   Order?  @relation(fields: [orderId], references: [id])
+
   products  CartItem[]
-  createdAt DateTime @default(now()) 
-  updatedAt DateTime
+  createdAt DateTime   @default(now())
+  updatedAt DateTime?
   deletedAt DateTime?
 }
 
 model List {
-  id        String     @id
-  userId    String     @unique
-  user      User       @relation(fields: [userId], references: [id])
+  id String @id
+
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id])
+
   products  ListItem[]
-  createdAt DateTime @default(now()) 
-  updatedAt DateTime
+  createdAt DateTime   @default(now())
+  updatedAt DateTime?
   deletedAt DateTime?
 }
 
@@ -80,8 +85,8 @@ model CartItem {
   cartId String
   cart   Cart   @relation(fields: [cartId], references: [id])
 
-  createdAt DateTime @default(now()) 
-  updatedAt DateTime
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
   deletedAt DateTime?
 
   @@id([productId, cartId])
@@ -94,34 +99,39 @@ model ListItem {
   listId String
   list   List   @relation(fields: [listId], references: [id])
 
-  createdAt DateTime @default(now()) 
-  updatedAt DateTime
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
   deletedAt DateTime?
 
   @@id([productId, listId])
 }
 
 model Product {
-  id    String       @id
-  name  String
-  price String
-  imgs  ProductImg[]
-  cart  CartItem[]
-  list  ListItem[]
+  id       String       @id
+  name     String
+  price    String
+  imgs     ProductImg[]
+  cart     CartItem[]
+  list     ListItem[]
+  category Category?
 
-  orderId String
-  order   Order  @relation(fields: [orderId], references: [id])
+  orderId String?
+  order   Order?  @relation(fields: [orderId], references: [id])
 
-  createdAt DateTime @default(now()) 
-  updatedAt DateTime
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
   deletedAt DateTime?
 }
 
 model Category {
-  id        String    @id
-  name      String
-  createdAt DateTime @default(now()) 
-  updatedAt DateTime
+  id   String @id
+  name String
+
+  productId String @unique
+  product   Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
   deletedAt DateTime?
 }
 
@@ -133,17 +143,19 @@ model Promotion {
   endAt       DateTime
   description String
   createdAt   DateTime
-  updatedAt DateTime
+  updatedAt   DateTime?
   deletedAt   DateTime?
 }
 
 model ProductImg {
   id        String    @id
   imgUrl    String
-  productId String
-  product   Product   @relation(fields: [productId], references: [id])
-  createdAt DateTime @default(now()) 
-  updatedAt DateTime
+
+  productId String?
+  product   Product?  @relation(fields: [productId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
   deletedAt DateTime?
 }
 
@@ -155,28 +167,31 @@ model Order {
   shippingCost  Float
   installments  Int?
   address       Address?
-  cart Cart?
-  product Product[]
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-  
+  cart          Cart?
+  product       Product[]
   notification  Notification?
 
-  createdAt DateTime @default(now()) 
-  updatedAt DateTime
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
   deletedAt DateTime?
 }
 
 model Card {
-  id             String    @unique
+  id             String @unique
   lastFourNumber Int
   expMounth      Int
   expYear        Int
   brand          String
-  createdAt      DateTime
-  updatedAt DateTime
-  deletedAt      DateTime?
+
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime
+  updatedAt DateTime?
+  deletedAt DateTime?
 }
 
 model Notification {
@@ -186,10 +201,10 @@ model Notification {
   isCheck    Boolean
   isArchived Boolean
 
-  orderId String @unique
-  Order   Order? @relation(fields: [orderId], references: [id])
+  orderId String? @unique
+  Order   Order?  @relation(fields: [orderId], references: [id])
 
-  createdAt DateTime @default(now()) 
-  updatedAt DateTime
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
   deletedAt DateTime?
 }

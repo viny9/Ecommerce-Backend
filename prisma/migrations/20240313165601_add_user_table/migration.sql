@@ -4,13 +4,12 @@ CREATE TABLE "User" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
-    "is_admin" BOOLEAN NOT NULL DEFAULT false,
-    "stripe_id" TEXT NOT NULL,
-    "address_id" TEXT NOT NULL,
-    "card_id" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL,
-    "deleted_at" TIMESTAMP(3),
     "password" TEXT NOT NULL,
+    "isAdmin" BOOLEAN NOT NULL DEFAULT false,
+    "stripeId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

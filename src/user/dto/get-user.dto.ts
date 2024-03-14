@@ -1,4 +1,4 @@
-export class UserDetailsDto {
+export class GetUserDto {
   constructor(
     readonly id: string,
     readonly email: string,
