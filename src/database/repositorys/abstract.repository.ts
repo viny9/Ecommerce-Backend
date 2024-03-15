@@ -16,12 +16,16 @@ export default abstract class Repository<T> implements RepositoryInteface<T> {
   ) {}
 
   async save(data: Partial<T>): Promise<T> {
-    return await this.prisma[this.tableName].create({
-      data: {
-        id: randomUUID(),
-        ...data,
-      },
-    });
+    try {
+      return this.prisma[this.tableName].create({
+        data: {
+          id: randomUUID(),
+          ...data,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async findAll(): Promise<T[]> {
