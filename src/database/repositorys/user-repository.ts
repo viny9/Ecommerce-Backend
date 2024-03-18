@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
+import { Injectable } from '@nestjs/common';
+import { randomUUID } from 'crypto';
+import { Users } from 'src/user/user.entity';
 import { User } from '@prisma/client';
 import Repository from './abstract.repository';
-import { randomUUID } from 'crypto';
+import { UpdateUserDto } from 'src/user/dto/update-user.dto';
 
 @Injectable()
 export class UserRepository extends Repository<User> {
@@ -10,16 +12,16 @@ export class UserRepository extends Repository<User> {
     super(prisma, 'user');
   }
 
-  async save(data: Partial<any>): Promise<User> {
+  async save(data: Users): Promise<Users> {
     return await this.prisma.user.create({
       data: {
-        id: randomUUID(),
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        password: data.password,
-        isAdmin: data.isAdmin,
-        stripeId: data.stripeId,
+        ...data,
+        address: {
+          create: {
+            id: randomUUID(),
+            ...data.address,
+          },
+        },
         cart: {
           create: {
             id: randomUUID(),
@@ -33,23 +35,52 @@ export class UserRepository extends Repository<User> {
             products: undefined,
           },
         },
-
-        address: {
-          create: {
-            id: randomUUID(),
-            cep: data.address.cep,
-            city: data.address.city,
-            neighborhood: data.address.neighborhood,
-            number: data.address.number,
-            state: data.address.state,
-          },
-        },
+      },
+      include: {
+        address: true,
       },
     });
   }
 
   async findAll(): Promise<any[]> {
     return await this.prisma.user.findMany({
+      include: {
+        address: true,
+      },
+    });
+  }
+
+  async findById(id: string): Promise<Users> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        address: true,
+      },
+    });
+
+    return user as Users;
+  }
+
+  async update(id: string, data: UpdateUserDto): Promise<Users> {
+    return await this.prisma.user.update({
+      where: { id },
+      data: {
+        ...data,
+        address: {
+          update: data.address,
+        },
+      },
+      include: {
+        address: true,
+      },
+    });
+  }
+
+  async delete(id: string): Promise<Users> {
+    return await this.prisma.user.delete({
+      where: { id },
       include: {
         address: true,
       },

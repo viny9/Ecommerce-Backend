@@ -1,3 +1,4 @@
+import { Address } from '@prisma/client';
 import { IsEmail, IsNotEmpty, IsPhoneNumber, MinLength } from 'class-validator';
 
 export class CreateUserDto {
@@ -11,6 +12,9 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsPhoneNumber('BR')
   phone: string;
+
+  @IsNotEmpty()
+  address: Address;
 
   @IsNotEmpty()
   @MinLength(6)

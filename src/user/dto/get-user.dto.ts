@@ -1,3 +1,5 @@
+import { Address } from '@prisma/client';
+
 export class GetUserDto {
   constructor(
     readonly id: string,
@@ -5,5 +7,6 @@ export class GetUserDto {
     readonly name: string,
     readonly phone: string,
     readonly isAdmin: boolean,
+    readonly address: Address,
   ) {}
 }
