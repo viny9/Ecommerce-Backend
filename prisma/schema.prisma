@@ -27,7 +27,7 @@ model User {
   address   Address?
   Order     Order[]
   createdAt DateTime  @default(now())
-  updatedAt DateTime?
+  updatedAt DateTime @updatedAt
   deletedAt DateTime?
 }
 
@@ -47,7 +47,7 @@ model Address {
   order   Order?  @relation(fields: [orderId], references: [id])
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime?
+  updatedAt DateTime @updatedAt
   deletedAt DateTime?
 }
 
@@ -62,7 +62,7 @@ model Cart {
 
   products  CartItem[]
   createdAt DateTime   @default(now())
-  updatedAt DateTime?
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
@@ -74,7 +74,7 @@ model List {
 
   products  ListItem[]
   createdAt DateTime   @default(now())
-  updatedAt DateTime?
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
@@ -86,7 +86,7 @@ model CartItem {
   cart   Cart   @relation(fields: [cartId], references: [id])
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime?
+  updatedAt DateTime @updatedAt
   deletedAt DateTime?
 
   @@id([productId, cartId])
@@ -100,7 +100,7 @@ model ListItem {
   list   List   @relation(fields: [listId], references: [id])
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime?
+  updatedAt DateTime @updatedAt
   deletedAt DateTime?
 
   @@id([productId, listId])
@@ -119,7 +119,7 @@ model Product {
   order   Order?  @relation(fields: [orderId], references: [id])
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime?
+  updatedAt DateTime @updatedAt
   deletedAt DateTime?
 }
 
@@ -127,11 +127,11 @@ model Category {
   id   String @id
   name String
 
-  productId String? @unique
+  productId String?  @unique
   product   Product? @relation(fields: [productId], references: [id])
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime?
+  updatedAt DateTime @updatedAt
   deletedAt DateTime?
 }
 
@@ -148,14 +148,14 @@ model Promotion {
 }
 
 model ProductImg {
-  id        String    @id
-  imgUrl    String
+  id     String @id
+  imgUrl String
 
   productId String?
-  product   Product?  @relation(fields: [productId], references: [id])
+  product   Product? @relation(fields: [productId], references: [id])
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime?
+  updatedAt DateTime @updatedAt
   deletedAt DateTime?
 }
 
@@ -175,7 +175,7 @@ model Order {
   user   User?   @relation(fields: [userId], references: [id])
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime?
+  updatedAt DateTime @updatedAt
   deletedAt DateTime?
 }
 
@@ -190,7 +190,7 @@ model Card {
   user   User?   @relation(fields: [userId], references: [id])
 
   createdAt DateTime
-  updatedAt DateTime?
+  updatedAt DateTime @updatedAt
   deletedAt DateTime?
 }
 
@@ -205,6 +205,6 @@ model Notification {
   Order   Order?  @relation(fields: [orderId], references: [id])
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime?
+  updatedAt DateTime @updatedAt
   deletedAt DateTime?
 }
