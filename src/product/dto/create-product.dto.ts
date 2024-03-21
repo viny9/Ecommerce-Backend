@@ -8,6 +8,9 @@ export class CreateProductDto {
   @IsNotEmpty()
   price: string;
 
+  @IsNotEmpty()
+  categoryId: string;
+
   @IsOptional()
   imgs: ProductImg[];
 }

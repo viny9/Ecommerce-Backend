@@ -27,7 +27,7 @@ model User {
   address   Address?
   Order     Order[]
   createdAt DateTime  @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
@@ -47,7 +47,7 @@ model Address {
   order   Order?  @relation(fields: [orderId], references: [id])
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
@@ -57,12 +57,13 @@ model Cart {
   userId String? @unique
   user   User?   @relation(fields: [userId], references: [id])
 
+  //Trocar esse relacionamento mais tarde 
   orderId String? @unique
   order   Order?  @relation(fields: [orderId], references: [id])
 
   products  CartItem[]
   createdAt DateTime   @default(now())
-  updatedAt DateTime  @updatedAt
+  updatedAt DateTime   @updatedAt
   deletedAt DateTime?
 }
 
@@ -74,7 +75,7 @@ model List {
 
   products  ListItem[]
   createdAt DateTime   @default(now())
-  updatedAt DateTime  @updatedAt
+  updatedAt DateTime   @updatedAt
   deletedAt DateTime?
 }
 
@@ -86,7 +87,7 @@ model CartItem {
   cart   Cart   @relation(fields: [cartId], references: [id])
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   @@id([productId, cartId])
@@ -100,26 +101,28 @@ model ListItem {
   list   List   @relation(fields: [listId], references: [id])
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   @@id([productId, listId])
 }
 
 model Product {
-  id       String       @id
-  name     String
-  price    String
-  imgs     ProductImg[]
-  cart     CartItem[]
-  list     ListItem[]
-  category Category?
+  id    String       @id
+  name  String
+  price String
+  imgs  ProductImg[]
+  cat   CartItem[]
+  list  ListItem[]
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
 
   orderId String?
   order   Order?  @relation(fields: [orderId], references: [id])
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
@@ -127,11 +130,10 @@ model Category {
   id   String @id
   name String
 
-  productId String?  @unique
-  product   Product? @relation(fields: [productId], references: [id])
+  product Product[]
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
@@ -142,8 +144,8 @@ model Promotion {
   startAt     DateTime
   endAt       DateTime
   description String
-  createdAt   DateTime
-  updatedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
   deletedAt   DateTime?
 }
 
@@ -155,7 +157,7 @@ model ProductImg {
   product   Product? @relation(fields: [productId], references: [id])
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
@@ -175,7 +177,7 @@ model Order {
   user   User?   @relation(fields: [userId], references: [id])
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
@@ -189,8 +191,8 @@ model Card {
   userId String? @unique
   user   User?   @relation(fields: [userId], references: [id])
 
-  createdAt DateTime
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
@@ -205,6 +207,6 @@ model Notification {
   Order   Order?  @relation(fields: [orderId], references: [id])
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
