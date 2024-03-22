@@ -25,14 +25,13 @@ export class UserRepository extends Repository<User> {
         cart: {
           create: {
             id: randomUUID(),
-            products: undefined,
+            products: {},
           },
         },
-
         list: {
           create: {
             id: randomUUID(),
-            products: undefined,
+            products: {},
           },
         },
       },
@@ -51,7 +50,7 @@ export class UserRepository extends Repository<User> {
   }
 
   async findById(id: string): Promise<Users> {
-    const user = await this.prisma.user.findUnique({
+    return await this.prisma.user.findUnique({
       where: {
         id,
       },
@@ -59,8 +58,6 @@ export class UserRepository extends Repository<User> {
         address: true,
       },
     });
-
-    return user as Users;
   }
 
   async update(id: string, data: UpdateUserDto): Promise<Users> {
