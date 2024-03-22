@@ -4,6 +4,7 @@ import { UserRepository } from './repositorys/user-repository';
 import { ProductRepository } from './repositorys/product-repository';
 import { CategoryRepository } from './repositorys/category.repository';
 import { CartRepository } from './repositorys/cart.repository';
+import { ListRepository } from './repositorys/list.repository';
 
 @Module({
   exports: [
@@ -12,6 +13,7 @@ import { CartRepository } from './repositorys/cart.repository';
     ProductRepository,
     CategoryRepository,
     CartRepository,
+    ListRepository,
   ],
   providers: [
     PrismaService,
@@ -19,6 +21,7 @@ import { CartRepository } from './repositorys/cart.repository';
     ProductRepository,
     CategoryRepository,
     CartRepository,
+    ListRepository,
   ],
 })
 export class DatabaseModule {}
