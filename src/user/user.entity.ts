@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Address, User } from '@prisma/client';
+import { Address, Card, User } from '@prisma/client';
 
 export class Users implements User {
   id: string;
@@ -11,6 +11,7 @@ export class Users implements User {
   isAdmin: boolean;
   stripeId: string;
   address?: Address;
+  card?: Card;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;

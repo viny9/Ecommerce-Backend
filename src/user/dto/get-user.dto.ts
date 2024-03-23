@@ -1,4 +1,5 @@
-import { Address } from '@prisma/client';
+import { GetCardDto } from 'src/card/dto/get-card.dto';
+import { AddressDto } from './address.dto';
 
 export class GetUserDto {
   constructor(
@@ -7,6 +8,7 @@ export class GetUserDto {
     readonly name: string,
     readonly phone: string,
     readonly isAdmin: boolean,
-    readonly address: Address,
+    readonly address: AddressDto,
+    readonly card?: GetCardDto,
   ) {}
 }

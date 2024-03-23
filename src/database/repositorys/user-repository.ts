@@ -28,6 +28,7 @@ export class UserRepository extends Repository<User> {
             products: {},
           },
         },
+        card: {},
         list: {
           create: {
             id: randomUUID(),
@@ -45,6 +46,7 @@ export class UserRepository extends Repository<User> {
     return await this.prisma.user.findMany({
       include: {
         address: true,
+        card: true,
       },
     });
   }
@@ -56,6 +58,7 @@ export class UserRepository extends Repository<User> {
       },
       include: {
         address: true,
+        card: true,
       },
     });
   }
@@ -71,6 +74,7 @@ export class UserRepository extends Repository<User> {
       },
       include: {
         address: true,
+        card: true,
       },
     });
   }
@@ -80,6 +84,7 @@ export class UserRepository extends Repository<User> {
       where: { id },
       include: {
         address: true,
+        card: true,
       },
     });
   }
