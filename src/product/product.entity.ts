@@ -6,7 +6,6 @@ export class Products implements Product {
   id: string;
   name: string;
   price: string;
-  orderId: string;
   imgs?: ProductImg[];
   categoryId: string;
   category: Category;

@@ -25,7 +25,7 @@ model User {
   cart      Cart?
   list      List?
   address   Address?
-  Order     Order[]
+  order     Order[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
@@ -54,17 +54,13 @@ model Address {
 model Cart {
   id String @id
 
-  products  CartItem[]
-  
+  products CartItem[]
+
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
 
-  //Trocar esse relacionamento mais tarde 
-  orderId String? @unique
-  order   Order?  @relation(fields: [orderId], references: [id])
-
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
@@ -113,14 +109,12 @@ model Product {
   name  String
   price String
   imgs  ProductImg[]
-  cat   CartItem[]
+  cart   CartItem[]
   list  ListItem[]
+  order OrderItem[]
 
   categoryId String?
   category   Category? @relation(fields: [categoryId], references: [id])
-
-  orderId String?
-  order   Order?  @relation(fields: [orderId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -170,9 +164,8 @@ model Order {
   shippingCost  Float
   installments  Int?
   address       Address?
-  cart          Cart?
-  product       Product[]
   notification  Notification?
+  products      OrderItem[]
 
   userId String?
   user   User?   @relation(fields: [userId], references: [id])
@@ -180,6 +173,20 @@ model Order {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+}
+
+model OrderItem {
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+
+  @@id([productId, orderId])
 }
 
 model Card {
