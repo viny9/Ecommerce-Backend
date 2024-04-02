@@ -1,4 +1,4 @@
-import { Orders } from 'src/order/order.entity';
+import { Orders } from 'src/order/entitys/order.entity';
 import Repository from './abstract.repository';
 import { PrismaService } from '../prisma.service';
 import { Injectable } from '@nestjs/common';
@@ -29,7 +29,7 @@ export class OrderRepository extends Repository<Orders> {
         products: {
           create: data.products.map((product) => ({
             product: {
-              connect: { id: product.id },
+              connect: { id: product.productId },
             },
           })),
         },
@@ -50,7 +50,7 @@ export class OrderRepository extends Repository<Orders> {
     });
   }
 
-  async findAll(): Promise<any[]> {
+  async findAll(): Promise<Orders[]> {
     return await this.prisma.order.findMany({
       include: {
         address: true,
@@ -68,7 +68,7 @@ export class OrderRepository extends Repository<Orders> {
     });
   }
 
-  async findAllByUserId(userId: string): Promise<any> {
+  async findAllByUserId(userId: string): Promise<Orders[]> {
     return await this.prisma.order.findMany({
       where: { userId },
       include: {
@@ -87,7 +87,7 @@ export class OrderRepository extends Repository<Orders> {
     });
   }
 
-  async findById(id: string): Promise<any> {
+  async findById(id: string): Promise<Orders> {
     return this.prisma.order.findUnique({
       where: { id },
       include: {
@@ -106,7 +106,7 @@ export class OrderRepository extends Repository<Orders> {
     });
   }
 
-  async updatePaymentStatus(id: string, status: string) {
+  async updatePaymentStatus(id: string, status: string): Promise<Orders> {
     return this.prisma.order.update({
       where: { id },
       data: {

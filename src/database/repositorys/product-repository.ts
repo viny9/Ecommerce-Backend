@@ -1,8 +1,7 @@
 import { Product } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
 import { Injectable } from '@nestjs/common';
-import { Products } from 'src/product/product.entity';
-import { CreateProductDto } from 'src/product/dto/create-product.dto';
+import { Products } from 'src/product/entitys/product.entity';
 import { randomUUID } from 'crypto';
 import { UpdateProductDto } from 'src/product/dto/update-product.dto';
 import Repository from './abstract.repository';
@@ -13,7 +12,7 @@ export class ProductRepository extends Repository<Product> {
     super(prisma, 'product');
   }
 
-  async save(data: CreateProductDto): Promise<Products> {
+  async save(data: Products): Promise<Products> {
     return await this.prisma.product.create({
       data: {
         id: randomUUID(),
@@ -61,6 +60,16 @@ export class ProductRepository extends Repository<Product> {
           },
         },
       },
+      include: {
+        category: true,
+        imgs: true,
+      },
+    });
+  }
+
+  async delete(id: string): Promise<Products> {
+    return this.prisma.product.delete({
+      where: { id },
       include: {
         category: true,
         imgs: true,

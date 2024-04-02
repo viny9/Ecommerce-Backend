@@ -13,6 +13,7 @@ import { UpdateCardDto } from './dto/update-card.dto';
 
 @Controller('card')
 export class CardController {
+  //TO-DO Adicionar opção de pegar os cartões do usuário
   constructor(private readonly cardService: CardService) {}
 
   @Post()

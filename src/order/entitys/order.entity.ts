@@ -1,6 +1,7 @@
-import { Order, Product } from '@prisma/client';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { Order } from '@prisma/client';
+import { CreateOrderDto } from '../dto/create-order.dto';
 import { randomUUID } from 'crypto';
+import { OrderItems } from './ordem-item.entity';
 
 export class Orders implements Order {
   id: string;
@@ -10,8 +11,8 @@ export class Orders implements Order {
   shippingCost: number;
   installments: number;
   userId: string;
-  products: Product[];
-  addressId: string;
+  products: OrderItems[];
+  addressId?: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;

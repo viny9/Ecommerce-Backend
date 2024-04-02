@@ -1,7 +1,7 @@
 import { PrismaService } from '../prisma.service';
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { Users } from 'src/user/user.entity';
+import { Users } from 'src/user/entitys/user.entity';
 import { User } from '@prisma/client';
 import Repository from './abstract.repository';
 import { UpdateUserDto } from 'src/user/dto/update-user.dto';

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderRepository } from 'src/database/repositorys/order.repository';
-import { Orders } from './order.entity';
+import { Orders } from './entitys/order.entity';
 import { GetOrderDto } from './dto/get-order.dto';
 import { GetProductDto } from 'src/product/dto/get-product.dto';
 import { GetCategoryDto } from 'src/category/dto/get-category.dto';

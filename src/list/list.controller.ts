@@ -6,11 +6,6 @@ import { UpdateListDto } from './dto/update-list.dto';
 export class ListController {
   constructor(private readonly listService: ListService) {}
 
-  @Get()
-  findAll() {
-    return this.listService.findAll();
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.listService.findOne(id);
