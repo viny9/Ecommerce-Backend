@@ -8,7 +8,7 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
   name: string;
 
   @IsOptional()
-  price: string;
+  price: number;
 
   @IsOptional()
   imgs: ProductImg[];

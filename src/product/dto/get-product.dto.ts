@@ -5,8 +5,9 @@ export class GetProductDto {
   constructor(
     readonly id: string,
     readonly name: string,
-    readonly price: string,
+    readonly price: number,
     readonly imgs: ImgDto[],
     readonly category: GetCategoryDto,
+    readonly promotionValue?: number,
   ) {}
 }

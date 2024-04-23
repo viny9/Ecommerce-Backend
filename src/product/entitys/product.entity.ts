@@ -4,14 +4,16 @@ import { Category, Product, ProductImg } from '@prisma/client';
 import { ImgDto } from '../dto/img.dto';
 import { GetProductDto } from '../dto/get-product.dto';
 import { GetCategoryDto } from 'src/category/dto/get-category.dto';
+import { Promotion } from 'src/promotion/entities/promotion.entity';
 
 export class Products implements Product {
   id: string;
   name: string;
-  price: string;
+  price: number;
   imgs?: ProductImg[];
   categoryId: string;
   category: Category;
+  promotion: Promotion;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
@@ -29,12 +31,21 @@ export class Products implements Product {
   }
 
   static toProductDto(product: Products): GetProductDto {
-    const imgsDto = this.imgsDtoGenerate(product.imgs);
+    const imgsDto: ImgDto[] = this.imgsDtoGenerate(product.imgs);
 
     const categoryDto = new GetCategoryDto(
       product.category.id,
       product.category.name,
     );
+
+    let promotionValue: number = null;
+
+    if (product.promotion) {
+      const value =
+        product.price - product.price * product.promotion.percentage;
+
+      promotionValue = value;
+    }
 
     return {
       id: product.id,
@@ -42,6 +53,7 @@ export class Products implements Product {
       price: product.price,
       imgs: imgsDto,
       category: categoryDto,
+      promotionValue: promotionValue,
     };
   }
 }

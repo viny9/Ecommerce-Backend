@@ -10,6 +10,7 @@ import { CartModule } from './cart/cart.module';
 import { ListModule } from './list/list.module';
 import { CardModule } from './card/card.module';
 import { OrderModule } from './order/order.module';
+import { PromotionModule } from './promotion/promotion.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { OrderModule } from './order/order.module';
     ListModule,
     CardModule,
     OrderModule,
+    PromotionModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

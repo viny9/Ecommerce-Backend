@@ -40,11 +40,11 @@ model Address {
   number       Int
   neighborhood String
 
-  userId String? @unique
-  user   User?   @relation(fields: [userId], references: [id])
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
 
-  orderId String? @unique
-  order   Order?  @relation(fields: [orderId], references: [id])
+  orderId String @unique
+  order   Order  @relation(fields: [orderId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -56,8 +56,8 @@ model Cart {
 
   products CartItem[]
 
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -67,12 +67,13 @@ model Cart {
 model List {
   id String @id
 
+  products ListItem[]
+
   userId String? @unique
   user   User?   @relation(fields: [userId], references: [id])
 
-  products  ListItem[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
@@ -105,16 +106,17 @@ model ListItem {
 }
 
 model Product {
-  id    String       @id
-  name  String
-  price String
-  imgs  ProductImg[]
-  cart   CartItem[]
-  list  ListItem[]
-  order OrderItem[]
+  id               String             @id
+  name             String
+  price            Float
+  imgs             ProductImg[]
+  cart             CartItem[]
+  list             ListItem[]
+  order            OrderItem[]
+  promotionProduct PromotionProduct[]
 
-  categoryId String?
-  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -133,15 +135,31 @@ model Category {
 }
 
 model Promotion {
-  id          String    @id
+  id          String             @id
   name        String
-  percentage  Float
+  products    PromotionProduct[]
   startAt     DateTime
   endAt       DateTime
   description String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime? @updatedAt
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime?          @updatedAt
   deletedAt   DateTime?
+}
+
+model PromotionProduct {
+  percentage Float
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  promotionId String
+  promotion   Promotion @relation(fields: [promotionId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@id([productId, promotionId])
 }
 
 model ProductImg {
