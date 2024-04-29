@@ -24,6 +24,7 @@ export class Cards implements Card {
   }
 
   static toCardDto(card: Card): GetCardDto {
+    console.log(card);
     return {
       id: card.id,
       brand: card.brand,

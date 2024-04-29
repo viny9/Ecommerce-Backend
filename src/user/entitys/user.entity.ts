@@ -32,7 +32,7 @@ export class Users implements User {
 
   private static toAddressDto(address: Users['address']): AddressDto {
     return {
-      id: address.id,
+      id: address.id || '',
       cep: address.cep,
       state: address.state,
       city: address.city,

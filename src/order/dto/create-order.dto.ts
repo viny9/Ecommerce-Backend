@@ -1,15 +1,16 @@
 import { IsNotEmpty, IsNumber } from 'class-validator';
 import { OrderItems } from '../entitys/ordem-item.entity';
+import { $Enums } from '@prisma/client';
 
 export class CreateOrderDto {
   @IsNumber()
   amountTotal: number;
 
   @IsNotEmpty()
-  paymentMethod: string;
+  paymentMethod: $Enums.PaymentMethod;
 
   @IsNotEmpty()
-  paymentStatus: string;
+  paymentStatus: $Enums.PaymentStatus;
 
   @IsNumber()
   shippingCost: number;
