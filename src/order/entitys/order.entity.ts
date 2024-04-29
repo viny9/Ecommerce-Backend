@@ -1,4 +1,4 @@
-import { Order } from '@prisma/client';
+import { $Enums, Order } from '@prisma/client';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { randomUUID } from 'crypto';
 import { OrderItems } from './ordem-item.entity';
@@ -6,9 +6,9 @@ import { OrderItems } from './ordem-item.entity';
 export class Orders implements Order {
   id: string;
   amountTotal: number;
-  paymentMethod: string;
-  paymentStatus: string;
   shippingCost: number;
+  paymentMethod: $Enums.PaymentMethod;
+  paymentStatus: $Enums.PaymentStatus;
   installments: number;
   userId: string;
   products: OrderItems[];

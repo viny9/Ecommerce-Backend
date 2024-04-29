@@ -12,8 +12,8 @@ export class Products implements Product {
   price: number;
   imgs?: ProductImg[];
   categoryId: string;
-  category: Category;
-  promotion: Promotion;
+  category?: Category;
+  promotion?: Promotion;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;

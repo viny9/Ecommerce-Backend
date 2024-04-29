@@ -2,6 +2,7 @@ import { Orders } from 'src/order/entitys/order.entity';
 import Repository from './abstract.repository';
 import { PrismaService } from '../prisma.service';
 import { Injectable } from '@nestjs/common';
+import { $Enums } from '@prisma/client';
 
 @Injectable()
 export class OrderRepository extends Repository<Orders> {
@@ -106,7 +107,10 @@ export class OrderRepository extends Repository<Orders> {
     });
   }
 
-  async updatePaymentStatus(id: string, status: string): Promise<Orders> {
+  async updatePaymentStatus(
+    id: string,
+    status: $Enums.PaymentStatus,
+  ): Promise<Orders> {
     return this.prisma.order.update({
       where: { id },
       data: {

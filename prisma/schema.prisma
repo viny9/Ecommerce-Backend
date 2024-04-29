@@ -13,6 +13,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PaymentStatus {
+  UNPAYD
+  PAYD
+}
+
+enum PaymentMethod {
+  BOLETO
+  CARD
+  PIX
+}
+
 model User {
   id        String    @id
   name      String
@@ -40,11 +51,11 @@ model Address {
   number       Int
   neighborhood String
 
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id])
 
-  orderId String @unique
-  order   Order  @relation(fields: [orderId], references: [id])
+  orderId String? @unique
+  order   Order?  @relation(fields: [orderId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -116,7 +127,7 @@ model Product {
   promotionProduct PromotionProduct[]
 
   categoryId String
-  category   Category @relation(fields: [categoryId], references: [id])
+  category   Category? @relation(fields: [categoryId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -177,8 +188,8 @@ model ProductImg {
 model Order {
   id            String        @unique
   amountTotal   Float
-  paymentMethod String
-  paymentStatus String
+  paymentMethod PaymentMethod
+  paymentStatus PaymentStatus
   shippingCost  Float
   installments  Int?
   address       Address?
