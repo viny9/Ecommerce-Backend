@@ -8,6 +8,6 @@ export class GetProductDto {
     readonly price: number,
     readonly imgs: ImgDto[],
     readonly category: GetCategoryDto,
-    readonly promotionValue?: number,
+    readonly promotionalValue?: number | null,
   ) {}
 }

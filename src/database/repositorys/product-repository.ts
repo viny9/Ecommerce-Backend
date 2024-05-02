@@ -33,6 +33,7 @@ export class ProductRepository extends Repository<Product> {
       include: {
         imgs: true,
         category: true,
+        promotionProduct: true,
       },
     });
   }

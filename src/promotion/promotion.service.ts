@@ -1,26 +1,62 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePromotionDto } from './dto/create-promotion.dto';
 import { UpdatePromotionDto } from './dto/update-promotion.dto';
+import { PromotionRepository } from 'src/database/repositorys/promotion.repository';
+import { Promotion } from './entities/promotion.entity';
+import { PromotionProductDto } from './dto/promotion-product.dto';
+import { PromotionsProducts } from './entities/PromotionProduct.entity';
 
 @Injectable()
 export class PromotionService {
-  create(createPromotionDto: CreatePromotionDto) {
-    return 'This action adds a new promotion';
+  constructor(private promotionRepository: PromotionRepository) {}
+
+  async create(createPromotionDto: CreatePromotionDto) {
+    const promotion = new Promotion(createPromotionDto);
+    return await this.promotionRepository.save(promotion);
   }
 
-  findAll() {
-    return `This action returns all promotion`;
+  async findAll() {
+    return await this.promotionRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} promotion`;
+  async findOne(id: string) {
+    return await this.promotionRepository.findById(id);
   }
 
-  update(id: number, updatePromotionDto: UpdatePromotionDto) {
-    return `This action updates a #${id} promotion`;
+  async findProductsByPromotionId(promotionId: string) {
+    return await this.promotionRepository.findAllProductByPromotionId(
+      promotionId,
+    );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} promotion`;
+  async update(id: string, updatePromotionDto: UpdatePromotionDto) {
+    return await this.promotionRepository.update(id, updatePromotionDto);
+  }
+
+  async remove(id: string) {
+    return await this.promotionRepository.delete(id);
+  }
+
+  async addPromotionProduct(
+    promotionId: string,
+    promotionProduct: PromotionProductDto | PromotionProductDto[],
+  ) {
+    if (!Array.isArray(promotionProduct)) {
+      promotionProduct = [promotionProduct];
+    }
+
+    const product = PromotionsProducts.toEntityArray(
+      promotionId,
+      promotionProduct,
+    );
+
+    return await this.promotionRepository.addPromotionProduct(product);
+  }
+
+  async removePromotionProduct(promotionId: string, productId: string) {
+    return await this.promotionRepository.removePromotionProductById(
+      productId,
+      promotionId,
+    );
   }
 }

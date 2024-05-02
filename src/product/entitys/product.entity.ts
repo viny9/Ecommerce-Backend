@@ -4,7 +4,7 @@ import { Category, Product, ProductImg } from '@prisma/client';
 import { ImgDto } from '../dto/img.dto';
 import { GetProductDto } from '../dto/get-product.dto';
 import { GetCategoryDto } from 'src/category/dto/get-category.dto';
-import { Promotion } from 'src/promotion/entities/promotion.entity';
+import { PromotionsProducts } from 'src/promotion/entities/PromotionProduct.entity';
 
 export class Products implements Product {
   id: string;
@@ -13,7 +13,7 @@ export class Products implements Product {
   imgs?: ProductImg[];
   categoryId: string;
   category?: Category;
-  promotion?: Promotion;
+  promotionProduct?: PromotionsProducts[];
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
@@ -24,13 +24,7 @@ export class Products implements Product {
     this.price = createProductDto.price;
   }
 
-  static imgsDtoGenerate(imgs: ProductImg[]): ImgDto[] {
-    return imgs.map((img) => {
-      return new ImgDto(img.id, img.imgUrl);
-    });
-  }
-
-  static toProductDto(product: Products): GetProductDto {
+  public static toProductDto(product: Products): GetProductDto {
     const imgsDto: ImgDto[] = this.imgsDtoGenerate(product.imgs);
 
     const categoryDto = new GetCategoryDto(
@@ -38,13 +32,14 @@ export class Products implements Product {
       product.category.name,
     );
 
-    let promotionValue: number = null;
+    let promotionalValue: number = null;
+    const promotion = product.promotionProduct[0];
 
-    if (product.promotion) {
-      const value =
-        product.price - product.price * product.promotion.percentage;
-
-      promotionValue = value;
+    if (promotion) {
+      promotionalValue = this.calcPromotionalPrice(
+        promotion.percentage,
+        product.price,
+      );
     }
 
     return {
@@ -53,7 +48,24 @@ export class Products implements Product {
       price: product.price,
       imgs: imgsDto,
       category: categoryDto,
-      promotionValue: promotionValue,
+      promotionalValue: promotionalValue,
     };
+  }
+
+  private static imgsDtoGenerate(imgs: ProductImg[]): ImgDto[] {
+    return imgs.map((img) => {
+      return new ImgDto(img.id, img.imgUrl);
+    });
+  }
+
+  private static calcPromotionalPrice(
+    percentage: number,
+    currentPrice: number,
+  ) {
+    const percentageInDecimal = percentage / 100;
+    const discountedValue = currentPrice - currentPrice * percentageInDecimal;
+    const formatedValue = Number(discountedValue.toFixed(2));
+
+    return formatedValue;
   }
 }
