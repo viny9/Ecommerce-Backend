@@ -7,6 +7,7 @@ import { CartRepository } from './repositorys/cart.repository';
 import { ListRepository } from './repositorys/list.repository';
 import { CardRepository } from './repositorys/card-repository';
 import { OrderRepository } from './repositorys/order.repository';
+import { PromotionRepository } from './repositorys/promotion.repository';
 
 @Module({
   exports: [
@@ -18,6 +19,7 @@ import { OrderRepository } from './repositorys/order.repository';
     ListRepository,
     CardRepository,
     OrderRepository,
+    PromotionRepository,
   ],
   providers: [
     PrismaService,
@@ -28,6 +30,7 @@ import { OrderRepository } from './repositorys/order.repository';
     ListRepository,
     CardRepository,
     OrderRepository,
+    PromotionRepository,
   ],
 })
 export class DatabaseModule {}

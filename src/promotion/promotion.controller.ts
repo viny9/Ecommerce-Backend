@@ -1,7 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { PromotionService } from './promotion.service';
 import { CreatePromotionDto } from './dto/create-promotion.dto';
 import { UpdatePromotionDto } from './dto/update-promotion.dto';
+import { PromotionProductDto } from './dto/promotion-product.dto';
 
 @Controller('promotion')
 export class PromotionController {
@@ -19,16 +28,40 @@ export class PromotionController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.promotionService.findOne(+id);
+    return this.promotionService.findOne(id);
+  }
+
+  @Get(':id/product')
+  findAllPromotionProductsById(@Param('id') id: string) {
+    return this.promotionService.findProductsByPromotionId(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePromotionDto: UpdatePromotionDto) {
-    return this.promotionService.update(+id, updatePromotionDto);
+  update(
+    @Param('id') id: string,
+    @Body() updatePromotionDto: UpdatePromotionDto,
+  ) {
+    return this.promotionService.update(id, updatePromotionDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.promotionService.remove(+id);
+    return this.promotionService.remove(id);
+  }
+
+  @Post(':id/product')
+  addProductInPromotion(
+    @Param('id') id: string,
+    @Body() promotionProductDto: PromotionProductDto | PromotionProductDto[],
+  ) {
+    return this.promotionService.addPromotionProduct(id, promotionProductDto);
+  }
+
+  @Delete(':promotionId/product/:productId')
+  async removePromotionProductById(
+    @Param('promotionId') promotionId: string,
+    @Param('productId') productId: string,
+  ) {
+    return this.promotionService.removePromotionProduct(promotionId, productId);
   }
 }
