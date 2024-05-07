@@ -17,18 +17,18 @@ export class PromotionController {
   constructor(private readonly promotionService: PromotionService) {}
 
   @Post()
-  create(@Body() createPromotionDto: CreatePromotionDto) {
-    return this.promotionService.create(createPromotionDto);
+  createPromotion(@Body() createPromotionDto: CreatePromotionDto) {
+    return this.promotionService.newPromotion(createPromotionDto);
   }
 
   @Get()
-  findAll() {
-    return this.promotionService.findAll();
+  getPromotions() {
+    return this.promotionService.findAllPromotions();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.promotionService.findOne(id);
+  getPromotionById(@Param('id') id: string) {
+    return this.promotionService.findPromotionById(id);
   }
 
   @Get(':id/product')
@@ -37,16 +37,16 @@ export class PromotionController {
   }
 
   @Patch(':id')
-  update(
+  updatePromotion(
     @Param('id') id: string,
     @Body() updatePromotionDto: UpdatePromotionDto,
   ) {
-    return this.promotionService.update(id, updatePromotionDto);
+    return this.promotionService.updatePromotion(id, updatePromotionDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.promotionService.remove(id);
+  deletePromotion(@Param('id') id: string) {
+    return this.promotionService.removePromotion(id);
   }
 
   @Post(':id/product')

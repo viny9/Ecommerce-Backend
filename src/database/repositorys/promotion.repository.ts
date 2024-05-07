@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import Repository from './abstract.repository';
-import { Promotion } from 'src/modules/promotion/entities/promotion.entity';
+import { PromotionEntity } from 'src/modules/promotion/entities/promotion.entity';
 import { PrismaService } from '../prisma.service';
-import { PromotionsProducts } from 'src/modules/promotion/entities/PromotionProduct.entity';
+import { PromotionProductEntity } from 'src/modules/promotion/entities/Promotion-product.entity';
 
 @Injectable()
-export class PromotionRepository extends Repository<Promotion> {
+export class PromotionRepository extends Repository<PromotionEntity> {
   constructor(protected prisma: PrismaService) {
     super(prisma, 'promotion');
   }
 
-  async addPromotionProduct(productPromotion: PromotionsProducts[]) {
+  async addPromotionProduct(productPromotion: PromotionProductEntity[]) {
     return await this.prisma.promotionProduct.createMany({
       data: productPromotion,
     });

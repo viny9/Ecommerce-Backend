@@ -2,7 +2,7 @@ import { PromotionProduct } from '@prisma/client';
 import { productEntity } from 'src/modules/product/entitys/product.entity';
 import { PromotionProductDto } from '../dto/promotion-product.dto';
 
-export class PromotionsProducts implements PromotionProduct {
+export class PromotionProductEntity implements PromotionProduct {
   percentage: number;
   productId: string;
   product?: productEntity;
@@ -16,9 +16,9 @@ export class PromotionsProducts implements PromotionProduct {
     promotionProduct: {
       [key in keyof PromotionProductDto]: PromotionProductDto[key];
     }[],
-  ): PromotionsProducts[] {
+  ): PromotionProductEntity[] {
     return promotionProduct.map((product) => {
-      return Object.assign(new PromotionsProducts(), {
+      return Object.assign(new PromotionProductEntity(), {
         ...product,
         promotionId,
         createdAt: new Date(),

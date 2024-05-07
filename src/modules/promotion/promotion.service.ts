@@ -2,24 +2,24 @@ import { Injectable } from '@nestjs/common';
 import { CreatePromotionDto } from './dto/create-promotion.dto';
 import { UpdatePromotionDto } from './dto/update-promotion.dto';
 import { PromotionRepository } from 'src/database/repositorys/promotion.repository';
-import { Promotion } from './entities/promotion.entity';
 import { PromotionProductDto } from './dto/promotion-product.dto';
-import { PromotionsProducts } from './entities/PromotionProduct.entity';
+import { PromotionEntity } from './entities/promotion.entity';
+import { PromotionProductEntity } from './entities/Promotion-product.entity';
 
 @Injectable()
 export class PromotionService {
   constructor(private promotionRepository: PromotionRepository) {}
 
-  async create(createPromotionDto: CreatePromotionDto) {
-    const promotion = new Promotion(createPromotionDto);
+  async newPromotion(createPromotionDto: CreatePromotionDto) {
+    const promotion = PromotionEntity.toEntity(createPromotionDto);
     return await this.promotionRepository.save(promotion);
   }
 
-  async findAll() {
+  async findAllPromotions() {
     return await this.promotionRepository.findAll();
   }
 
-  async findOne(id: string) {
+  async findPromotionById(id: string) {
     return await this.promotionRepository.findById(id);
   }
 
@@ -29,11 +29,11 @@ export class PromotionService {
     );
   }
 
-  async update(id: string, updatePromotionDto: UpdatePromotionDto) {
+  async updatePromotion(id: string, updatePromotionDto: UpdatePromotionDto) {
     return await this.promotionRepository.update(id, updatePromotionDto);
   }
 
-  async remove(id: string) {
+  async removePromotion(id: string) {
     return await this.promotionRepository.delete(id);
   }
 
@@ -45,7 +45,7 @@ export class PromotionService {
       promotionProduct = [promotionProduct];
     }
 
-    const product = PromotionsProducts.toEntityArray(
+    const product = PromotionProductEntity.toEntityArray(
       promotionId,
       promotionProduct,
     );

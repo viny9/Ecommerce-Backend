@@ -2,7 +2,7 @@ import { CreateProductDto } from '../dto/create-product.dto';
 import { Category, Product, ProductImg } from '@prisma/client';
 import { ImgDto } from '../dto/img.dto';
 import { GetProductDto } from '../dto/get-product.dto';
-import { PromotionsProducts } from 'src/modules/promotion/entities/PromotionProduct.entity';
+import { PromotionProductEntity } from 'src/modules/promotion/entities/Promotion-product.entity';
 import { CategoryEntity } from 'src/modules/category/entitys/category.entity';
 
 export class productEntity implements Product {
@@ -12,7 +12,7 @@ export class productEntity implements Product {
   imgs?: ProductImg[];
   categoryId: string;
   category?: Category;
-  promotionProduct?: PromotionsProducts[];
+  promotionProduct?: PromotionProductEntity[];
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
