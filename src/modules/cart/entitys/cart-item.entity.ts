@@ -1,7 +1,7 @@
 import { CartItem } from '@prisma/client';
 import { Products } from 'src/modules/product/entitys/product.entity';
 
-export class CartItems implements CartItem {
+export class CartItemEntity implements CartItem {
   productId: string;
   cartId: string;
   product: Products;
@@ -9,8 +9,8 @@ export class CartItems implements CartItem {
   updatedAt: Date;
   deletedAt: Date;
 
-  public static toEntity(productId: string, cartId: string): CartItems {
-    return Object.assign(new CartItems(), {
+  public static toEntity(productId: string, cartId: string): CartItemEntity {
+    return Object.assign(new CartItemEntity(), {
       productId,
       cartId,
       createdAt: new Date(),

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import Repository from './abstract.repository';
-import { Promotion } from 'src/promotion/entities/promotion.entity';
+import { Promotion } from 'src/modules/promotion/entities/promotion.entity';
 import { PrismaService } from '../prisma.service';
-import { PromotionsProducts } from 'src/promotion/entities/PromotionProduct.entity';
+import { PromotionsProducts } from 'src/modules/promotion/entities/PromotionProduct.entity';
 
 @Injectable()
 export class PromotionRepository extends Repository<Promotion> {

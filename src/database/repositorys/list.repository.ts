@@ -1,13 +1,26 @@
-import { List } from '@prisma/client';
+import { List, Prisma } from '@prisma/client';
 import Repository from './abstract.repository';
 import { PrismaService } from '../prisma.service';
 import { Injectable } from '@nestjs/common';
-import { ListItems } from 'src/list/entitys/list-item.entity';
+import { ListItems } from 'src/modules/list/entitys/list-item.entity';
 
 @Injectable()
-export class ListRepository extends Repository<List> {
+export class ListRepository extends Repository<List, Prisma.ListInclude> {
   constructor(protected prisma: PrismaService) {
-    super(prisma, 'list');
+    const includes = {
+      products: {
+        include: {
+          product: {
+            include: {
+              imgs: true,
+              category: true,
+              promotionProduct: true,
+            },
+          },
+        },
+      },
+    };
+    super(prisma, 'list', includes);
   }
 
   async findListByUserId(id: string) {

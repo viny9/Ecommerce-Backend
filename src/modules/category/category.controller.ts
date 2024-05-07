@@ -16,30 +16,30 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.create(createCategoryDto);
+  createCategory(@Body() createCategoryDto: CreateCategoryDto) {
+    return this.categoryService.addCategory(createCategoryDto);
   }
 
   @Get()
-  findAll() {
-    return this.categoryService.findAll();
+  getAllCategorys() {
+    return this.categoryService.findAllCategorys();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoryService.findOne(id);
+  getCategory(@Param('id') id: string) {
+    return this.categoryService.findCategoryById(id);
   }
 
   @Patch(':id')
-  update(
+  updateCategory(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
-    return this.categoryService.update(id, updateCategoryDto);
+    return this.categoryService.updateCategoryById(id, updateCategoryDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoryService.remove(id);
+  deleteCategory(@Param('id') id: string) {
+    return this.categoryService.removeCategoryById(id);
   }
 }

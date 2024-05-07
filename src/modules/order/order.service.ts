@@ -5,10 +5,8 @@ import { OrderRepository } from 'src/database/repositorys/order.repository';
 import { Orders } from './entitys/order.entity';
 import { GetOrderDto } from './dto/get-order.dto';
 import { GetProductDto } from 'src/modules/product/dto/get-product.dto';
-import { GetCategoryDto } from 'src/modules/category/dto/get-category.dto';
 import { ImgDto } from 'src/modules/product/dto/img.dto';
 import { CategoryEntity } from '../category/entitys/category.entity';
-import { Product, Category } from '@prisma/client';
 
 @Injectable()
 // Create later the methos of admin update the status

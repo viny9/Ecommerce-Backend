@@ -1,42 +1,27 @@
-import { Orders } from 'src/order/entitys/order.entity';
 import Repository from './abstract.repository';
+import { Orders } from 'src/modules/order/entitys/order.entity';
 import { PrismaService } from '../prisma.service';
 import { Injectable } from '@nestjs/common';
-import { $Enums } from '@prisma/client';
+import { $Enums, Prisma } from '@prisma/client';
 
 @Injectable()
-export class OrderRepository extends Repository<Orders> {
+export class OrderRepository extends Repository<Orders, Prisma.OrderInclude> {
   constructor(protected prisma: PrismaService) {
-    super(prisma, 'order');
-  }
-
-  // Adicionar agora cartão
-  async save(data: Orders): Promise<Orders> {
-    return await this.prisma.order.create({
-      data: {
-        ...data,
-        products: {
-          create: data.products.map((product) => ({
-            product: {
-              connect: { id: product.productId },
-            },
-          })),
-        },
-      },
-      include: {
-        address: true,
-        products: {
-          include: {
-            product: {
-              include: {
-                imgs: true,
-                category: true,
-              },
+    const includes: Prisma.OrderInclude = {
+      address: true,
+      products: {
+        include: {
+          product: {
+            include: {
+              imgs: true,
+              category: true,
+              promotionProduct: true,
             },
           },
         },
       },
-    });
+    };
+    super(prisma, 'order', includes);
   }
 
   async findAll(): Promise<Orders[]> {
@@ -49,6 +34,7 @@ export class OrderRepository extends Repository<Orders> {
               include: {
                 imgs: true,
                 category: true,
+                promotionProduct: true,
               },
             },
           },
@@ -68,6 +54,7 @@ export class OrderRepository extends Repository<Orders> {
               include: {
                 imgs: true,
                 category: true,
+                promotionProduct: true,
               },
             },
           },
@@ -87,6 +74,7 @@ export class OrderRepository extends Repository<Orders> {
               include: {
                 imgs: true,
                 category: true,
+                promotionProduct: true,
               },
             },
           },
@@ -112,6 +100,7 @@ export class OrderRepository extends Repository<Orders> {
               include: {
                 imgs: true,
                 category: true,
+                promotionProduct: true,
               },
             },
           },

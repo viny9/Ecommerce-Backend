@@ -10,7 +10,9 @@ import { Category } from '@prisma/client';
 export class CategoryService {
   constructor(private repository: CategoryRepository) {}
 
-  async create(createCategoryDto: CreateCategoryDto): Promise<GetCategoryDto> {
+  async addCategory(
+    createCategoryDto: CreateCategoryDto,
+  ): Promise<GetCategoryDto> {
     const exists: boolean = await this.repository.checkIfExists(
       'name',
       createCategoryDto.name,
@@ -24,7 +26,7 @@ export class CategoryService {
     return CategoryEntity.toDto(res);
   }
 
-  async findAll(): Promise<GetCategoryDto[]> {
+  async findAllCategorys(): Promise<GetCategoryDto[]> {
     const categorys: Category[] = await this.repository.findAll();
 
     return categorys.map((category) => {
@@ -32,7 +34,7 @@ export class CategoryService {
     });
   }
 
-  async findOne(id: string): Promise<GetCategoryDto> {
+  async findCategoryById(id: string): Promise<GetCategoryDto> {
     const category: Category = await this.repository.findById(id);
     if (!category)
       throw new Error('Nenhuma categoria foi encontrada com esse id');
@@ -40,7 +42,7 @@ export class CategoryService {
     return CategoryEntity.toDto(category);
   }
 
-  async update(
+  async updateCategoryById(
     id: string,
     updateCategoryDto: UpdateCategoryDto,
   ): Promise<GetCategoryDto> {
@@ -56,7 +58,7 @@ export class CategoryService {
     return CategoryEntity.toDto(category);
   }
 
-  async remove(id: string): Promise<GetCategoryDto> {
+  async removeCategoryById(id: string): Promise<GetCategoryDto> {
     const exists: boolean = await this.repository.checkIfExists('id', id);
     if (!exists)
       throw new Error('Nenhuma categoria foi encontrada com esse id');

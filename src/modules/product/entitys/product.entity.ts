@@ -10,9 +10,9 @@ export class Products implements Product {
   id: string;
   name: string;
   price: number;
-  imgs: ProductImg[];
+  imgs?: ProductImg[];
   categoryId: string;
-  category: Category;
+  category?: Category;
   promotionProduct?: PromotionsProducts[];
   createdAt: Date;
   updatedAt: Date;
@@ -22,6 +22,7 @@ export class Products implements Product {
     this.id = randomUUID();
     this.name = createProductDto.name;
     this.price = createProductDto.price;
+    this.categoryId = createProductDto.categoryId;
   }
 
   public static toProductDto(product: Products): GetProductDto {

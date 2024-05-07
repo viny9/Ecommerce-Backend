@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { CartRepository } from 'src/database/repositorys/cart.repository';
 import { GetCartDto } from './dto/get-cart.dto';
-import { Carts } from './entitys/cart.entity';
+import { CartEntity } from './entitys/cart.entity';
 import { Products } from 'src/modules/product/entitys/product.entity';
 
 @Injectable()
 export class CartService {
   constructor(private repository: CartRepository) {}
 
-  async findOne(id: string): Promise<GetCartDto> {
-    const cart: Carts = await this.repository.findCartByUserId(id);
+  async findUserCart(id: string): Promise<GetCartDto> {
+    const cart: CartEntity = await this.repository.findCartByUserId(id);
     if (!cart) throw new Error('Nenhum usuário foi encontrado com esse nome');
 
-    return Carts.toCartDto(cart);
+    return CartEntity.toDto(cart);
   }
 
   async addItemInCart(id: string, productId: string) {

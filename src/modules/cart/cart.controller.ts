@@ -6,8 +6,8 @@ export class CartController {
   constructor(private readonly cartService: CartService) {}
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cartService.findOne(id);
+  getCart(@Param('id') id: string) {
+    return this.cartService.findUserCart(id);
   }
 
   @Post(':id/products/:productId')

@@ -1,20 +1,28 @@
-import { Cart } from '@prisma/client';
+import { Cart, Prisma } from '@prisma/client';
 import Repository from './abstract.repository';
 import { PrismaService } from '../prisma.service';
 import { Injectable } from '@nestjs/common';
-import { CartItems } from 'src/cart/entitys/cart-item.entity';
+import { CartItemEntity } from 'src/modules/cart/entitys/cart-item.entity';
+import { CartEntity } from 'src/modules/cart/entitys/cart.entity';
 
 @Injectable()
-export class CartRepository extends Repository<Cart> {
+export class CartRepository extends Repository<Cart, Prisma.CartInclude> {
   constructor(protected prisma: PrismaService) {
-    super(prisma, 'cart');
+    const includes = {
+      products: {
+        include: {
+          product: {
+            include: { imgs: true, category: true, promotionProduct: true },
+          },
+        },
+      },
+    };
+    super(prisma, 'cart', includes);
   }
 
-  async findCartByUserId(id: string) {
+  async findCartByUserId(userId: string): Promise<CartEntity> {
     return await this.prisma.cart.findUnique({
-      where: {
-        userId: id,
-      },
+      where: { userId },
       include: {
         products: {
           include: {
@@ -42,7 +50,10 @@ export class CartRepository extends Repository<Cart> {
     });
   }
 
-  async addCartItem(cartId: string, productId: string): Promise<CartItems> {
+  async addCartItem(
+    cartId: string,
+    productId: string,
+  ): Promise<CartItemEntity> {
     return await this.prisma.cartItem.create({
       data: {
         cartId,

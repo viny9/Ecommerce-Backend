@@ -3,8 +3,8 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { Address, User } from '@prisma/client';
 import { GetUserDto } from '../dto/get-user.dto';
 import { AddressDto } from '../dto/address.dto';
-import { Cards } from 'src/modules/card/entitys/card.entity';
-import { Carts } from 'src/modules/cart/entitys/cart.entity';
+import { CardEntity } from 'src/modules/card/entitys/card.entity';
+import { CartEntity } from 'src/modules/cart/entitys/cart.entity';
 import { Lists } from 'src/modules/list/entitys/list.entity';
 
 export class Users implements User {
@@ -16,8 +16,8 @@ export class Users implements User {
   isAdmin: boolean;
   stripeId: string;
   address?: Address;
-  card?: Cards;
-  cart?: Carts;
+  card?: CardEntity;
+  cart?: CartEntity;
   list?: Lists;
   createdAt: Date;
   updatedAt: Date;
@@ -32,9 +32,9 @@ export class Users implements User {
     this.isAdmin = false;
     this.stripeId = 'Teste';
     this.address = createUserDto.address;
-    // this.card = Cards.toEntity();
     this.list = Lists.toEntity(randomUUID(), this.id);
-    this.cart = Carts.toEntity(randomUUID(), this.id);
+    this.cart = CartEntity.toEntity(this.id);
+    // this.card = CardEntity.toEntity();
   }
 
   private static toAddressDto(address: Users['address']): AddressDto {
@@ -57,7 +57,7 @@ export class Users implements User {
       phone: user.phone,
       isAdmin: user.isAdmin,
       address: this.toAddressDto(user.address),
-      card: Cards.toCardDto(user.card) || null,
+      card: CardEntity.toDto(user.card) || null,
     };
   }
 }

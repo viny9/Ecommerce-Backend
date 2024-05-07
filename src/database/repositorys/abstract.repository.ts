@@ -9,10 +9,13 @@ interface RepositoryInteface<T> {
   delete(id: string): Promise<T>;
 }
 
-export default abstract class Repository<T> implements RepositoryInteface<T> {
+export default abstract class Repository<T, U = any>
+  implements RepositoryInteface<T>
+{
   constructor(
     protected readonly prisma: PrismaService,
     private readonly tableName: string,
+    private readonly includes?: U,
   ) {}
 
   async checkIfExists(field: string, data: any): Promise<boolean> {
@@ -31,16 +34,20 @@ export default abstract class Repository<T> implements RepositoryInteface<T> {
         id: randomUUID(),
         ...data,
       },
+      include: this.includes,
     });
   }
 
   async findAll(): Promise<T[]> {
-    return await this.prisma[this.tableName].findMany();
+    return await this.prisma[this.tableName].findMany({
+      include: this.includes,
+    });
   }
 
   async findById(id: string): Promise<T> {
     return await this.prisma[this.tableName].findUnique({
       where: { id },
+      include: this.includes,
     });
   }
 
@@ -48,12 +55,14 @@ export default abstract class Repository<T> implements RepositoryInteface<T> {
     return await this.prisma[this.tableName].update({
       where: { id },
       data: data,
+      include: this.includes,
     });
   }
 
   async delete(id: string): Promise<T> {
     return await this.prisma[this.tableName].delete({
       where: { id },
+      include: this.includes,
     });
   }
 }
