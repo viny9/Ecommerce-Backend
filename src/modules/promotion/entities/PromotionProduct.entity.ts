@@ -1,11 +1,11 @@
 import { PromotionProduct } from '@prisma/client';
-import { Products } from 'src/modules/product/entitys/product.entity';
+import { productEntity } from 'src/modules/product/entitys/product.entity';
 import { PromotionProductDto } from '../dto/promotion-product.dto';
 
 export class PromotionsProducts implements PromotionProduct {
   percentage: number;
   productId: string;
-  product?: Products;
+  product?: productEntity;
   promotionId: string;
   createdAt: Date;
   updatedAt: Date;

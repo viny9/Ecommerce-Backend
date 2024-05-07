@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ListRepository } from 'src/database/repositorys/list.repository';
 import { ListEntity } from './entitys/list.entity';
-import { Products } from 'src/modules/product/entitys/product.entity';
+import { productEntity } from 'src/modules/product/entitys/product.entity';
 
 @Injectable()
 export class ListService {
@@ -23,7 +23,7 @@ export class ListService {
     if (alredyInList) throw new Error('Já está na lista');
 
     const listItem = await this.repository.addListItem(id, productId);
-    return Products.toProductDto(listItem.product);
+    return productEntity.toDto(listItem.product);
   }
 
   async removeItemFromList(id: string, productId: string) {
@@ -35,6 +35,6 @@ export class ListService {
       throw new NotFoundException('Não há produto na lista com esse id');
 
     const listItem = await this.repository.removeListItem(id, productId);
-    return Products.toProductDto(listItem.product);
+    return productEntity.toDto(listItem.product);
   }
 }

@@ -1,11 +1,10 @@
 import Repository from './abstract.repository';
-import { Orders } from 'src/modules/order/entitys/order.entity';
 import { PrismaService } from '../prisma.service';
 import { Injectable } from '@nestjs/common';
-import { $Enums, Prisma } from '@prisma/client';
+import { $Enums, Order, Prisma } from '@prisma/client';
 
 @Injectable()
-export class OrderRepository extends Repository<Orders, Prisma.OrderInclude> {
+export class OrderRepository extends Repository<Order, Prisma.OrderInclude> {
   constructor(protected prisma: PrismaService) {
     const includes: Prisma.OrderInclude = {
       address: true,
@@ -24,48 +23,9 @@ export class OrderRepository extends Repository<Orders, Prisma.OrderInclude> {
     super(prisma, 'order', includes);
   }
 
-  async findAll(): Promise<Orders[]> {
-    return await this.prisma.order.findMany({
-      include: {
-        address: true,
-        products: {
-          include: {
-            product: {
-              include: {
-                imgs: true,
-                category: true,
-                promotionProduct: true,
-              },
-            },
-          },
-        },
-      },
-    });
-  }
-
-  async findAllByUserId(userId: string): Promise<Orders[]> {
+  async findAllByUserId(userId: string): Promise<Order[]> {
     return await this.prisma.order.findMany({
       where: { userId },
-      include: {
-        address: true,
-        products: {
-          include: {
-            product: {
-              include: {
-                imgs: true,
-                category: true,
-                promotionProduct: true,
-              },
-            },
-          },
-        },
-      },
-    });
-  }
-
-  async findById(id: string): Promise<Orders> {
-    return this.prisma.order.findUnique({
-      where: { id },
       include: {
         address: true,
         products: {
@@ -86,7 +46,7 @@ export class OrderRepository extends Repository<Orders, Prisma.OrderInclude> {
   async updatePaymentStatus(
     id: string,
     status: $Enums.PaymentStatus,
-  ): Promise<Orders> {
+  ): Promise<Order> {
     return this.prisma.order.update({
       where: { id },
       data: {

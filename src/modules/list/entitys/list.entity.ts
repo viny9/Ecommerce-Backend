@@ -1,7 +1,7 @@
 import { List } from '@prisma/client';
 import { GetListDto } from '../dto/get-list.dto';
 import { ListItemEntity } from './list-item.entity';
-import { Products } from 'src/modules/product/entitys/product.entity';
+import { productEntity } from 'src/modules/product/entitys/product.entity';
 
 export class ListEntity implements List {
   id: string;
@@ -20,7 +20,7 @@ export class ListEntity implements List {
       id: list.id,
       userId: list.userId,
       products: list.products.map((listItem) =>
-        Products.toProductDto(listItem.product),
+        productEntity.toDto(listItem.product),
       ),
     };
   }
