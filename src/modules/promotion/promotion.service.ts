@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePromotionDto } from './dto/create-promotion.dto';
 import { UpdatePromotionDto } from './dto/update-promotion.dto';
 import { PromotionRepository } from 'src/database/repositorys/promotion.repository';
@@ -8,33 +8,31 @@ import { PromotionProductEntity } from './entities/Promotion-product.entity';
 
 @Injectable()
 export class PromotionService {
-  constructor(private promotionRepository: PromotionRepository) {}
+  constructor(private repository: PromotionRepository) {}
 
   async newPromotion(createPromotionDto: CreatePromotionDto) {
     const promotion = PromotionEntity.toEntity(createPromotionDto);
-    return await this.promotionRepository.save(promotion);
+    return await this.repository.save(promotion);
   }
 
   async findAllPromotions() {
-    return await this.promotionRepository.findAll();
+    return await this.repository.findAll();
   }
 
   async findPromotionById(id: string) {
-    return await this.promotionRepository.findById(id);
+    return await this.repository.findById(id);
   }
 
   async findProductsByPromotionId(promotionId: string) {
-    return await this.promotionRepository.findAllProductByPromotionId(
-      promotionId,
-    );
+    return await this.repository.findAllProductByPromotionId(promotionId);
   }
 
   async updatePromotion(id: string, updatePromotionDto: UpdatePromotionDto) {
-    return await this.promotionRepository.update(id, updatePromotionDto);
+    return await this.repository.update(id, updatePromotionDto);
   }
 
   async removePromotion(id: string) {
-    return await this.promotionRepository.delete(id);
+    return await this.repository.delete(id);
   }
 
   async addPromotionProduct(
@@ -50,11 +48,31 @@ export class PromotionService {
       promotionProduct,
     );
 
-    return await this.promotionRepository.addPromotionProduct(product);
+    product.forEach((product) => {
+      const exists = this.repository.findProductOnPromotionById(
+        product.promotionId,
+        product.productId,
+      );
+
+      if (exists)
+        throw new BadRequestException('Este produto já está em uma promoção');
+    });
+
+    return await this.repository.addPromotionProduct(product);
   }
 
   async removePromotionProduct(promotionId: string, productId: string) {
-    return await this.promotionRepository.removePromotionProductById(
+    const exists = this.repository.findProductOnPromotionById(
+      promotionId,
+      productId,
+    );
+
+    if (!exists)
+      throw new BadRequestException(
+        'Nenhum producto com esse id foi acho nessa promoção',
+      );
+
+    return await this.repository.removePromotionProductById(
       productId,
       promotionId,
     );

@@ -30,6 +30,17 @@ export class PromotionRepository extends Repository<PromotionEntity> {
     });
   }
 
+  async findProductOnPromotionById(promotionId: string, productId: string) {
+    return await this.prisma.promotionProduct.findUnique({
+      where: {
+        productId_promotionId: {
+          productId,
+          promotionId,
+        },
+      },
+    });
+  }
+
   async removePromotionProductById(productId: string, promotionId: string) {
     return await this.prisma.promotionProduct.delete({
       where: { productId_promotionId: { productId, promotionId } },

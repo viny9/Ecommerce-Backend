@@ -6,50 +6,48 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from 'src/database/repositorys/user-repository';
-import { Users } from './entitys/user.entity';
+import { UserEntity } from './entitys/user.entity';
 
 @Injectable()
 export class UserService {
   constructor(private repository: UserRepository) {}
 
-  async create(createUserDto: CreateUserDto) {
-    const userExists = await this.repository.findByEmail(createUserDto.email);
-    if (userExists)
+  async newUser(createUserDto: CreateUserDto) {
+    const exists = this.repository.checkIfExists('email', createUserDto.email);
+    if (exists)
       throw new BadRequestException('User alredy exists with this email.');
 
-    const user = new Users(createUserDto);
+    const user = UserEntity.toEntity(createUserDto);
     const res = await this.repository.save(user);
 
-    return Users.toUserDto(res);
+    return UserEntity.toDto(res);
   }
 
-  async findAll() {
+  async findAllUsers() {
     const users = await this.repository.findAll();
-    return users.map((user: Users) => Users.toUserDto(user));
+    return users.map((user: UserEntity) => UserEntity.toDto(user));
   }
 
-  async findOne(userId: string) {
+  async findUserById(userId: string) {
     const user = await this.repository.findById(userId);
     if (!user) throw new NotFoundException('Couldnt found User with this id');
 
-    return Users.toUserDto(user);
+    return UserEntity.toDto(user);
   }
 
-  async update(userId: string, updateUserDto: UpdateUserDto) {
-    const userExists = await this.repository.findById(userId);
-    if (!userExists)
-      throw new NotFoundException('Couldnt found User with this id');
+  async updateUserById(userId: string, updateUserDto: UpdateUserDto) {
+    const exists = this.repository.checkIfExists('id', userId);
+    if (!exists) throw new NotFoundException('Couldnt found User with this id');
 
     const user = await this.repository.update(userId, updateUserDto);
-    return Users.toUserDto(user);
+    return UserEntity.toDto(user);
   }
 
-  async remove(userId: string) {
-    const userExists = await this.repository.findById(userId);
-    if (!userExists)
-      throw new NotFoundException('Couldnt found User with this id');
+  async removeUser(userId: string) {
+    const exists = this.repository.checkIfExists('id', userId);
+    if (!exists) throw new NotFoundException('Couldnt found User with this id');
 
     const user = await this.repository.delete(userId);
-    return Users.toUserDto(user);
+    return UserEntity.toDto(user);
   }
 }
