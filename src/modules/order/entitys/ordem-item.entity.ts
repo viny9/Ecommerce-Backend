@@ -1,7 +1,7 @@
 import { OrderItem } from '@prisma/client';
 import { Products } from 'src/modules/product/entitys/product.entity';
 
-export class OrderItems implements OrderItem {
+export class OrderItemEntity implements OrderItem {
   productId: string;
   orderId: string;
   product: Products;
@@ -9,8 +9,8 @@ export class OrderItems implements OrderItem {
   updatedAt: Date;
   deletedAt: Date;
 
-  public static toEntity(productId: string, orderId: string): OrderItems {
-    return Object.assign(new OrderItems(), {
+  public static toEntity(productId: string, orderId: string): OrderItemEntity {
+    return Object.assign(new OrderItemEntity(), {
       productId,
       orderId,
     });

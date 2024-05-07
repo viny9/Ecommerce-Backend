@@ -8,27 +8,30 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(createOrderDto);
+  createOrder(@Body() createOrderDto: CreateOrderDto) {
+    return this.orderService.newOrder(createOrderDto);
   }
 
   @Get('')
-  findAll() {
-    return this.orderService.findAll();
+  getAllOrders() {
+    return this.orderService.findAllOrders();
   }
 
   @Get('user/:id')
-  findAllUserOrders(@Param('id') id: string) {
+  getAllUserOrders(@Param('id') id: string) {
     return this.orderService.findAllUserOrders(id);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.orderService.findOne(id);
+  getOrder(@Param('id') id: string) {
+    return this.orderService.findOrderById(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
+  updateOrderStatus(
+    @Param('id') id: string,
+    @Body() updateOrderDto: UpdateOrderDto,
+  ) {
     return this.orderService.updatePaymentStatus(id, updateOrderDto);
   }
 }

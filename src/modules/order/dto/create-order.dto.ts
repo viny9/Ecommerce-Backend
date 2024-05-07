@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsNumber } from 'class-validator';
-import { OrderItems } from '../entitys/ordem-item.entity';
+import { OrderItemEntity } from '../entitys/ordem-item.entity';
 import { $Enums } from '@prisma/client';
 
 export class CreateOrderDto {
@@ -25,5 +25,5 @@ export class CreateOrderDto {
   addressId: string;
 
   @IsNotEmpty()
-  products: OrderItems[];
+  products: OrderItemEntity[];
 }

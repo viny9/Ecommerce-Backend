@@ -1,8 +1,10 @@
 import { $Enums, Order } from '@prisma/client';
 import { CreateOrderDto } from '../dto/create-order.dto';
-import { OrderItems } from './ordem-item.entity';
+import { OrderItemEntity } from './ordem-item.entity';
+import { GetOrderDto } from '../dto/get-order.dto';
+import { Products } from 'src/modules/product/entitys/product.entity';
 
-export class Orders implements Order {
+export class OrderEntity implements Order {
   id: string;
   amountTotal: number;
   shippingCost: number;
@@ -10,17 +12,31 @@ export class Orders implements Order {
   paymentStatus: $Enums.PaymentStatus;
   installments: number;
   userId: string;
-  products: OrderItems[];
+  products: OrderItemEntity[];
   addressId?: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
 
-  public static toEntity(createOrderDto: CreateOrderDto): Orders {
-    createOrderDto.products = createOrderDto.products.map((order) => {
-      return OrderItems.toEntity(order.productId, order.orderId);
+  public static toEntity(createOrderDto: CreateOrderDto): OrderEntity {
+    createOrderDto.products = createOrderDto.products.map((orderItem) => {
+      return OrderItemEntity.toEntity(orderItem.productId, orderItem.orderId);
     });
 
-    return Object.assign(new Orders(), createOrderDto);
+    return Object.assign(new OrderEntity(), createOrderDto);
+  }
+
+  public static toDto(order: OrderEntity): GetOrderDto {
+    return {
+      id: order.id,
+      amountTotal: order.amountTotal,
+      paymentMethod: order.paymentMethod,
+      paymentStatus: order.paymentStatus,
+      shippingCost: order.shippingCost,
+      installments: order.installments,
+      products: order.products.map(({ product }) => {
+        return Products.toProductDto(product);
+      }),
+    };
   }
 }
