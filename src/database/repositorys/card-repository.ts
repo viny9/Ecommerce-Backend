@@ -8,4 +8,10 @@ export class CardRepository extends Repository<Card> {
   constructor(protected prisma: PrismaService) {
     super(prisma, 'card');
   }
+
+  async findCardByUserId(userId: string): Promise<Card> {
+    return await this.prisma.card.findUnique({
+      where: { userId },
+    });
+  }
 }
