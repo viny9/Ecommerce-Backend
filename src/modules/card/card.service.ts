@@ -1,14 +1,11 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
 import { CardRepository } from 'src/database/repositorys/card-repository';
 import { GetCardDto } from './dto/get-card.dto';
 import { CardEntity } from './entitys/card.entity';
 import { Card } from '@prisma/client';
+import { AlredyExistsException } from 'src/shared/exceptions/AlredyExistsException';
 
 @Injectable()
 export class CardService {
@@ -20,7 +17,7 @@ export class CardService {
       createCardDto.userId,
     );
     if (exists)
-      throw new BadRequestException('Usuário já tem um cartão cadastrado');
+      throw new AlredyExistsException('Usuário já tem um cartão cadastrado');
 
     const card = CardEntity.toEntity(createCardDto);
     const res: Card = await this.repository.save(card);

@@ -1,10 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryRepository } from 'src/database/repositorys/category.repository';
 import { GetCategoryDto } from './dto/get-category.dto';
 import { CategoryEntity } from './entitys/category.entity';
 import { Category } from '@prisma/client';
+import { AlredyExistsException } from 'src/shared/exceptions/AlredyExistsException';
 
 @Injectable()
 export class CategoryService {
@@ -19,7 +20,7 @@ export class CategoryService {
     );
 
     if (exists)
-      throw new BadRequestException('Já há uma categoria com esse nome');
+      throw new AlredyExistsException('Já há uma categoria com esse nome');
 
     const category = CategoryEntity.toEntity(createCategoryDto.name);
     const res: Category = await this.repository.save(category);
@@ -37,7 +38,9 @@ export class CategoryService {
   async findCategoryById(id: string): Promise<GetCategoryDto> {
     const category: Category = await this.repository.findById(id);
     if (!category)
-      throw new Error('Nenhuma categoria foi encontrada com esse id');
+      throw new NotFoundException(
+        'Nenhuma categoria foi encontrada com esse id',
+      );
 
     return CategoryEntity.toDto(category);
   }
@@ -48,7 +51,9 @@ export class CategoryService {
   ): Promise<GetCategoryDto> {
     const exists: boolean = await this.repository.checkIfExists('id', id);
     if (!exists)
-      throw new Error('Nenhuma categoria foi encontrada com esse id');
+      throw new NotFoundException(
+        'Nenhuma categoria foi encontrada com esse id',
+      );
 
     const category: Category = await this.repository.update(
       id,
@@ -61,7 +66,9 @@ export class CategoryService {
   async removeCategoryById(id: string): Promise<GetCategoryDto> {
     const exists: boolean = await this.repository.checkIfExists('id', id);
     if (!exists)
-      throw new Error('Nenhuma categoria foi encontrada com esse id');
+      throw new NotFoundException(
+        'Nenhuma categoria foi encontrada com esse id',
+      );
 
     const category: Category = await this.repository.delete(id);
     return CategoryEntity.toDto(category);

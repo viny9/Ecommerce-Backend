@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ListRepository } from 'src/database/repositorys/list.repository';
 import { ListEntity } from './entitys/list.entity';
 import { productEntity } from 'src/modules/product/entitys/product.entity';
+import { AlredyExistsException } from 'src/shared/exceptions/AlredyExistsException';
 
 @Injectable()
 export class ListService {
@@ -20,7 +21,7 @@ export class ListService {
       id,
       productId,
     );
-    if (alredyInList) throw new Error('Já está na lista');
+    if (alredyInList) throw new AlredyExistsException('Já está na lista');
 
     const listItem = await this.repository.addListItem(id, productId);
     return productEntity.toDto(listItem.product);
