@@ -27,11 +27,17 @@ export class ProductService {
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
+    const productExists = await this.repository.findById(id);
+    if (!productExists) return null;
+
     const updatedProduct = await this.repository.update(id, updateProductDto);
     return Products.toProductDto(updatedProduct);
   }
 
   async remove(id: string) {
+    const productExists = await this.repository.findById(id);
+    if (!productExists) return null;
+
     const product = await this.repository.delete(id);
     return Products.toProductDto(product);
   }

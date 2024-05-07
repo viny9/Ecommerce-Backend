@@ -3,45 +3,64 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryRepository } from 'src/database/repositorys/category.repository';
 import { GetCategoryDto } from './dto/get-category.dto';
-import { Categorys } from './entitys/category.entity';
+import { CategoryEntity } from './entitys/category.entity';
+import { Category } from '@prisma/client';
 
 @Injectable()
 export class CategoryService {
   constructor(private repository: CategoryRepository) {}
 
   async create(createCategoryDto: CreateCategoryDto): Promise<GetCategoryDto> {
-    const category = new Categorys(createCategoryDto);
-    const res: Categorys = await this.repository.save(category);
-    return new GetCategoryDto(res.id, res.name);
+    const exists: boolean = await this.repository.checkIfExists(
+      'name',
+      createCategoryDto.name,
+    );
+
+    if (exists) throw new Error('Já há uma categoria com esse nome');
+
+    const category = CategoryEntity.toEntity(createCategoryDto.name);
+    const res: Category = await this.repository.save(category);
+    return CategoryEntity.toDto(res);
   }
 
   async findAll(): Promise<GetCategoryDto[]> {
-    const categorys: Categorys[] = await this.repository.findAll();
+    const categorys: Category[] = await this.repository.findAll();
 
     return categorys.map((category) => {
-      return new GetCategoryDto(category.id, category.name);
+      return CategoryEntity.toDto(category);
     });
   }
 
   async findOne(id: string): Promise<GetCategoryDto> {
-    const category = await this.repository.findById(id);
-    return new GetCategoryDto(category.id, category.name);
+    const category: Category = await this.repository.findById(id);
+    if (!category)
+      throw new Error('Nenhuma categoria foi encontrada com esse id');
+
+    return CategoryEntity.toDto(category);
   }
 
   async update(
     id: string,
     updateCategoryDto: UpdateCategoryDto,
   ): Promise<GetCategoryDto> {
-    const category: Categorys = await this.repository.update(
+    const exists: boolean = await this.repository.checkIfExists('id', id);
+    if (!exists)
+      throw new Error('Nenhuma categoria foi encontrada com esse id');
+
+    const category: Category = await this.repository.update(
       id,
       updateCategoryDto,
     );
 
-    return new GetCategoryDto(category.id, category.name);
+    return CategoryEntity.toDto(category);
   }
 
   async remove(id: string): Promise<GetCategoryDto> {
-    const category: Categorys = await this.repository.delete(id);
-    return new GetCategoryDto(category.id, category.name);
+    const exists: boolean = await this.repository.checkIfExists('id', id);
+    if (!exists)
+      throw new Error('Nenhuma categoria foi encontrada com esse id');
+
+    const category: Category = await this.repository.delete(id);
+    return CategoryEntity.toDto(category);
   }
 }

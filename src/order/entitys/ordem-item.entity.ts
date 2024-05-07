@@ -8,4 +8,11 @@ export class OrderItems implements OrderItem {
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
+
+  public static toEntity(productId: string, orderId: string): OrderItems {
+    return Object.assign(new OrderItems(), {
+      productId,
+      orderId,
+    });
+  }
 }

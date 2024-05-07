@@ -10,9 +10,9 @@ export class Products implements Product {
   id: string;
   name: string;
   price: number;
-  imgs?: ProductImg[];
+  imgs: ProductImg[];
   categoryId: string;
-  category?: Category;
+  category: Category;
   promotionProduct?: PromotionsProducts[];
   createdAt: Date;
   updatedAt: Date;
@@ -33,7 +33,7 @@ export class Products implements Product {
     );
 
     let promotionalValue: number = null;
-    const promotion = product.promotionProduct[0];
+    const promotion = product.promotionProduct[0] || null;
 
     if (promotion) {
       promotionalValue = this.calcPromotionalPrice(

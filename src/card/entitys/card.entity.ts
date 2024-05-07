@@ -1,7 +1,6 @@
-import { randomUUID } from 'crypto';
-import { CreateCardDto } from '../dto/create-card.dto';
 import { Card } from '@prisma/client';
 import { GetCardDto } from '../dto/get-card.dto';
+import { CreateCardDto } from '../dto/create-card.dto';
 
 export class Cards implements Card {
   id: string;
@@ -14,17 +13,11 @@ export class Cards implements Card {
   updatedAt: Date;
   deletedAt: Date;
 
-  constructor(createCardDto: CreateCardDto) {
-    this.id = randomUUID();
-    this.userId = createCardDto.userId;
-    this.lastFourNumber = createCardDto.lastFourNumber;
-    this.expMounth = createCardDto.expMounth;
-    this.expYear = createCardDto.expYear;
-    this.brand = createCardDto.brand;
+  public static toEntity(createCardDto: CreateCardDto): Cards {
+    return Object.assign(new Cards(), createCardDto);
   }
 
-  static toCardDto(card: Card): GetCardDto {
-    console.log(card);
+  public static toCardDto(card: Card): GetCardDto {
     return {
       id: card.id,
       brand: card.brand,

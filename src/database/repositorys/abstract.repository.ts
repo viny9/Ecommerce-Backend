@@ -15,17 +15,23 @@ export default abstract class Repository<T> implements RepositoryInteface<T> {
     private readonly tableName: string,
   ) {}
 
+  async checkIfExists(field: string, data: any): Promise<boolean> {
+    const check = await this.prisma[this.tableName].findUnique({
+      where: { [field]: data },
+    });
+
+    if (check) return true;
+
+    return false;
+  }
+
   async save(data: Partial<T>): Promise<T> {
-    try {
-      return this.prisma[this.tableName].create({
-        data: {
-          id: randomUUID(),
-          ...data,
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    return this.prisma[this.tableName].create({
+      data: {
+        id: randomUUID(),
+        ...data,
+      },
+    });
   }
 
   async findAll(): Promise<T[]> {

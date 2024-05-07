@@ -1,9 +1,11 @@
 import { randomUUID } from 'crypto';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { Address, Card, User } from '@prisma/client';
+import { Address, User } from '@prisma/client';
 import { GetUserDto } from '../dto/get-user.dto';
 import { AddressDto } from '../dto/address.dto';
 import { Cards } from 'src/card/entitys/card.entity';
+import { Carts } from 'src/cart/entitys/cart.entity';
+import { Lists } from 'src/list/entitys/list.entity';
 
 export class Users implements User {
   id: string;
@@ -14,7 +16,9 @@ export class Users implements User {
   isAdmin: boolean;
   stripeId: string;
   address?: Address;
-  card?: Card;
+  card?: Cards;
+  cart?: Carts;
+  list?: Lists;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
@@ -28,6 +32,9 @@ export class Users implements User {
     this.isAdmin = false;
     this.stripeId = 'Teste';
     this.address = createUserDto.address;
+    // this.card = Cards.toEntity();
+    this.list = Lists.toEntity(randomUUID(), this.id);
+    this.cart = Carts.toEntity(randomUUID(), this.id);
   }
 
   private static toAddressDto(address: Users['address']): AddressDto {

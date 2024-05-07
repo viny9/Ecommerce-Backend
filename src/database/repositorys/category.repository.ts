@@ -8,4 +8,10 @@ export class CategoryRepository extends Repository<Category> {
   constructor(protected prisma: PrismaService) {
     super(prisma, 'category');
   }
+
+  async findByCategoryName(name: string): Promise<Category> {
+    return await this.prisma.category.findUnique({
+      where: { name },
+    });
+  }
 }

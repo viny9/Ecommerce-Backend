@@ -25,7 +25,7 @@ enum PaymentMethod {
 }
 
 model User {
-  id        String    @id
+  id        String    @id @default(uuid())
   name      String
   email     String    @unique
   phone     String
@@ -40,10 +40,12 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  @@map("user")
 }
 
 model Address {
-  id           String  @id
+  id           String  @id @default(uuid())
   cep          String
   city         String
   state        String
@@ -60,10 +62,12 @@ model Address {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  @@map("address")
 }
 
 model Cart {
-  id String @id
+  id String @id @default(uuid())
 
   products CartItem[]
 
@@ -73,10 +77,12 @@ model Cart {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  @@map("cart")
 }
 
 model List {
-  id String @id
+  id String @id @default(uuid())
 
   products ListItem[]
 
@@ -86,6 +92,8 @@ model List {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  @@map("list")
 }
 
 model CartItem {
@@ -100,6 +108,7 @@ model CartItem {
   deletedAt DateTime?
 
   @@id([productId, cartId])
+  @@map("cart_item")
 }
 
 model ListItem {
@@ -114,11 +123,12 @@ model ListItem {
   deletedAt DateTime?
 
   @@id([productId, listId])
+  @@map("list_item")
 }
 
 model Product {
-  id               String             @id
-  name             String
+  id               String             @id @default(uuid())
+  name             String             @unique
   price            Float
   imgs             ProductImg[]
   cart             CartItem[]
@@ -132,21 +142,25 @@ model Product {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  @@map("product")
 }
 
 model Category {
-  id   String @id
-  name String
+  id   String @id @default(uuid())
+  name String @unique
 
   product Product[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  @@map("category")
 }
 
 model Promotion {
-  id          String             @id
+  id          String             @id @default(uuid())
   name        String
   products    PromotionProduct[]
   startAt     DateTime
@@ -155,6 +169,8 @@ model Promotion {
   createdAt   DateTime           @default(now())
   updatedAt   DateTime?          @updatedAt
   deletedAt   DateTime?
+
+  @@map("promotion")
 }
 
 model PromotionProduct {
@@ -171,10 +187,11 @@ model PromotionProduct {
   deletedAt DateTime?
 
   @@id([productId, promotionId])
+  @@map("promotion_product")
 }
 
 model ProductImg {
-  id     String @id
+  id     String @id @default(uuid())
   imgUrl String
 
   productId String?
@@ -183,10 +200,12 @@ model ProductImg {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  @@map("product_img")
 }
 
 model Order {
-  id            String        @unique
+  id            String        @id @default(uuid())
   amountTotal   Float
   paymentMethod PaymentMethod
   paymentStatus PaymentStatus
@@ -202,6 +221,8 @@ model Order {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  @@map("order")
 }
 
 model OrderItem {
@@ -216,10 +237,11 @@ model OrderItem {
   deletedAt DateTime?
 
   @@id([productId, orderId])
+  @@map("order_item")
 }
 
 model Card {
-  id             String @unique
+  id             String @id @default(uuid())
   lastFourNumber Int
   expMounth      Int
   expYear        Int
@@ -231,10 +253,12 @@ model Card {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  @@map("card")
 }
 
 model Notification {
-  id         String   @id
+  id         String   @id @default(uuid())
   orderAt    DateTime
   message    String
   isCheck    Boolean
@@ -246,4 +270,6 @@ model Notification {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  @@map("notification")
 }

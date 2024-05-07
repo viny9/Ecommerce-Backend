@@ -11,6 +11,10 @@ export class Carts implements Cart {
   updatedAt: Date;
   deletedAt: Date;
 
+  public static toEntity(cartId: string, userId: string): Carts {
+    return Object.assign(new Carts(), { cartId, userId, products: [] });
+  }
+
   static toCartDto(cart: Carts): GetCartDto {
     return {
       id: cart.id,

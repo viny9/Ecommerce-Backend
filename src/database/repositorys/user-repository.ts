@@ -1,6 +1,5 @@
 import { PrismaService } from '../prisma.service';
 import { Injectable } from '@nestjs/common';
-import { randomUUID } from 'crypto';
 import { Users } from 'src/user/entitys/user.entity';
 import { User } from '@prisma/client';
 import Repository from './abstract.repository';
@@ -14,28 +13,29 @@ export class UserRepository extends Repository<User> {
 
   async save(data: Users): Promise<Users> {
     return await this.prisma.user.create({
-      data: {
-        ...data,
-        address: {
-          create: {
-            id: randomUUID(),
-            ...data.address,
-          },
-        },
-        cart: {
-          create: {
-            id: randomUUID(),
-            products: {},
-          },
-        },
-        card: {},
-        list: {
-          create: {
-            id: randomUUID(),
-            products: {},
-          },
-        },
-      },
+      data,
+      // data: {
+      //   ...data,
+      //   address: {
+      //     create: {
+      //       id: randomUUID(),
+      //       ...data.address,
+      //     },
+      //   },
+      //   cart: {
+      //     create: {
+      //       id: randomUUID(),
+      //       products: {},
+      //     },
+      //   },
+      //   card: {},
+      //   list: {
+      //     create: {
+      //       id: randomUUID(),
+      //       products: {},
+      //     },
+      //   },
+      // },
       include: {
         address: true,
       },
@@ -60,6 +60,12 @@ export class UserRepository extends Repository<User> {
         address: true,
         card: true,
       },
+    });
+  }
+
+  async findByEmail(email: string) {
+    return await this.prisma.user.findUnique({
+      where: { email },
     });
   }
 

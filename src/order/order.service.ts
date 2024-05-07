@@ -14,7 +14,7 @@ export class OrderService {
   constructor(private repository: OrderRepository) {}
 
   async create(createOrderDto: CreateOrderDto) {
-    const order = new Orders(createOrderDto);
+    const order = Orders.toEntity(createOrderDto);
     const res = await this.repository.save(order);
 
     const products = res.products.map((element) => {

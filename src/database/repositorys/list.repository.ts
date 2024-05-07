@@ -2,7 +2,7 @@ import { List } from '@prisma/client';
 import Repository from './abstract.repository';
 import { PrismaService } from '../prisma.service';
 import { Injectable } from '@nestjs/common';
-import { UpdateListDto } from 'src/list/dto/update-list.dto';
+import { ListItems } from 'src/list/entitys/list-item.entity';
 
 @Injectable()
 export class ListRepository extends Repository<List> {
@@ -22,6 +22,7 @@ export class ListRepository extends Repository<List> {
               include: {
                 imgs: true,
                 category: true,
+                promotionProduct: true,
               },
             },
           },
@@ -30,61 +31,44 @@ export class ListRepository extends Repository<List> {
     });
   }
 
-  async addListItem(listId: string, data: UpdateListDto) {
-    return await this.prisma.list.update({
+  async findItemOnListById(listId: string, itemId: string): Promise<ListItems> {
+    return await this.prisma.listItem.findUnique({
       where: {
-        id: listId,
-      },
-      data: {
-        products: {
-          create: {
-            product: {
-              connect: {
-                id: data.productId,
-              },
-            },
-          },
+        productId_listId: {
+          listId,
+          productId: itemId,
         },
       },
+    });
+  }
+
+  async addListItem(listId: string, productId: string): Promise<ListItems> {
+    return await this.prisma.listItem.create({
+      data: {
+        productId,
+        listId,
+      },
       include: {
-        products: {
+        product: {
           include: {
-            product: {
-              include: {
-                imgs: true,
-                category: true,
-              },
-            },
+            imgs: true,
+            category: true,
+            promotionProduct: true,
           },
         },
       },
     });
   }
 
-  async removeListItem(listId: string, data: UpdateListDto) {
-    return await this.prisma.list.update({
-      where: {
-        id: listId,
-      },
-      data: {
-        products: {
-          delete: {
-            productId_listId: {
-              productId: data.productId,
-              listId: listId,
-            },
-          },
-        },
-      },
+  async removeListItem(listId: string, productId: string): Promise<ListItems> {
+    return this.prisma.listItem.delete({
+      where: { productId_listId: { productId, listId } },
       include: {
-        products: {
+        product: {
           include: {
-            product: {
-              include: {
-                imgs: true,
-                category: true,
-              },
-            },
+            imgs: true,
+            category: true,
+            promotionProduct: true,
           },
         },
       },

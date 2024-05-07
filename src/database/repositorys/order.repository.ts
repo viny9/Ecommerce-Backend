@@ -11,22 +11,10 @@ export class OrderRepository extends Repository<Orders> {
   }
 
   // Adicionar agora cartão
-  async save(data: Orders): Promise<any> {
+  async save(data: Orders): Promise<Orders> {
     return await this.prisma.order.create({
       data: {
-        id: data.id,
-        amountTotal: data.amountTotal,
-        paymentMethod: data.paymentMethod,
-        paymentStatus: data.paymentStatus,
-        shippingCost: data.shippingCost,
-        userId: data.userId,
-        installments: data.installments,
-        address: {
-          connect: {
-            userId: data.userId,
-            id: data.addressId,
-          },
-        },
+        ...data,
         products: {
           create: data.products.map((product) => ({
             product: {

@@ -11,6 +11,10 @@ export class Lists implements List {
   updatedAt: Date;
   deletedAt: Date;
 
+  public static toEntity(listId: string, userId: string): Lists {
+    return Object.assign(new Lists(), { listId, userId });
+  }
+
   public static toListDto(list: Lists): GetListDto {
     return {
       id: list.id,

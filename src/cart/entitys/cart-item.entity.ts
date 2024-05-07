@@ -8,4 +8,13 @@ export class CartItems implements CartItem {
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
+
+  public static toEntity(productId: string, cartId: string): CartItems {
+    return Object.assign(new CartItems(), {
+      productId,
+      cartId,
+      createdAt: new Date(),
+      updatedAt: undefined,
+    });
+  }
 }
