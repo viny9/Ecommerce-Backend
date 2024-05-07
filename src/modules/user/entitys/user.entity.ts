@@ -5,7 +5,7 @@ import { GetUserDto } from '../dto/get-user.dto';
 import { AddressDto } from '../dto/address.dto';
 import { CardEntity } from 'src/modules/card/entitys/card.entity';
 import { CartEntity } from 'src/modules/cart/entitys/cart.entity';
-import { Lists } from 'src/modules/list/entitys/list.entity';
+import { ListEntity } from 'src/modules/list/entitys/list.entity';
 
 export class Users implements User {
   id: string;
@@ -18,7 +18,7 @@ export class Users implements User {
   address?: Address;
   card?: CardEntity;
   cart?: CartEntity;
-  list?: Lists;
+  list?: ListEntity;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
@@ -32,7 +32,7 @@ export class Users implements User {
     this.isAdmin = false;
     this.stripeId = 'Teste';
     this.address = createUserDto.address;
-    this.list = Lists.toEntity(randomUUID(), this.id);
+    this.list = ListEntity.toEntity(randomUUID(), this.id);
     this.cart = CartEntity.toEntity(this.id);
     // this.card = CardEntity.toEntity();
   }

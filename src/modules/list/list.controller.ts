@@ -6,8 +6,8 @@ export class ListController {
   constructor(private readonly listService: ListService) {}
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.listService.findOne(id);
+  async getList(@Param('id') id: string) {
+    return await this.listService.findListByUserId(id);
   }
 
   @Post(':id/product/:productId')

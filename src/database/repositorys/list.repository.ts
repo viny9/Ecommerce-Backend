@@ -2,12 +2,12 @@ import { List, Prisma } from '@prisma/client';
 import Repository from './abstract.repository';
 import { PrismaService } from '../prisma.service';
 import { Injectable } from '@nestjs/common';
-import { ListItems } from 'src/modules/list/entitys/list-item.entity';
+import { ListItemEntity } from 'src/modules/list/entitys/list-item.entity';
 
 @Injectable()
 export class ListRepository extends Repository<List, Prisma.ListInclude> {
   constructor(protected prisma: PrismaService) {
-    const includes = {
+    const includes: Prisma.ListInclude = {
       products: {
         include: {
           product: {
@@ -44,7 +44,10 @@ export class ListRepository extends Repository<List, Prisma.ListInclude> {
     });
   }
 
-  async findItemOnListById(listId: string, itemId: string): Promise<ListItems> {
+  async findItemOnListById(
+    listId: string,
+    itemId: string,
+  ): Promise<ListItemEntity> {
     return await this.prisma.listItem.findUnique({
       where: {
         productId_listId: {
@@ -55,7 +58,10 @@ export class ListRepository extends Repository<List, Prisma.ListInclude> {
     });
   }
 
-  async addListItem(listId: string, productId: string): Promise<ListItems> {
+  async addListItem(
+    listId: string,
+    productId: string,
+  ): Promise<ListItemEntity> {
     return await this.prisma.listItem.create({
       data: {
         productId,
@@ -73,7 +79,10 @@ export class ListRepository extends Repository<List, Prisma.ListInclude> {
     });
   }
 
-  async removeListItem(listId: string, productId: string): Promise<ListItems> {
+  async removeListItem(
+    listId: string,
+    productId: string,
+  ): Promise<ListItemEntity> {
     return this.prisma.listItem.delete({
       where: { productId_listId: { productId, listId } },
       include: {

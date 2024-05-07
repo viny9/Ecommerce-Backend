@@ -1,18 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ListRepository } from 'src/database/repositorys/list.repository';
-import { Lists } from './entitys/list.entity';
+import { ListEntity } from './entitys/list.entity';
 import { Products } from 'src/modules/product/entitys/product.entity';
 
 @Injectable()
 export class ListService {
   constructor(private repository: ListRepository) {}
 
-  async findOne(id: string) {
+  async findListByUserId(id: string) {
     const list = await this.repository.findListByUserId(id);
     if (!list)
       throw new NotFoundException('Nenhum usuário com esse id encontrado');
 
-    return Lists.toListDto(list);
+    return ListEntity.toDto(list);
   }
 
   async addItemInList(id: string, productId: string) {

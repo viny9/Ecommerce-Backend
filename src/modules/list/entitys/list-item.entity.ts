@@ -1,7 +1,7 @@
 import { ListItem } from '@prisma/client';
 import { Products } from 'src/modules/product/entitys/product.entity';
 
-export class ListItems implements ListItem {
+export class ListItemEntity implements ListItem {
   productId: string;
   product?: Products;
   listId: string;
@@ -9,12 +9,10 @@ export class ListItems implements ListItem {
   updatedAt: Date;
   deletedAt: Date = undefined;
 
-  public static toEntity(productId: string, listId: string): ListItems {
-    return Object.assign(new ListItems(), {
+  public static toEntity(productId: string, listId: string): ListItemEntity {
+    return Object.assign(new ListItemEntity(), {
       productId,
       listId,
-      createdAt: new Date(),
-      updatedAt: undefined,
     });
   }
 }
