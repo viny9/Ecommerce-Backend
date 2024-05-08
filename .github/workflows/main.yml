@@ -1,0 +1,16 @@
+name: Merge pull request that can be merge
+on:
+  push:
+    branches:
+      - 'feature/*'
+jobs:
+  merge-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Merge feature/xxx -> develop
+        uses: devmasx/merge-branch@develop
+        with:
+          type: now
+          target_branch: develop
