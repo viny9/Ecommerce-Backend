@@ -1,0 +1,28 @@
+name: Merge pull request that can be merge
+on:
+  pull_request:
+    types: [opened]
+ 
+jobs:
+  merge-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check if pull request can be merged
+        id: check_mergeability
+        run: |
+          # Script para verificar se a solicitação de pull pode ser mesclada
+          if git merge-base --is-ancestor ${{ github.event.pull_request.head.sha }} ${{ github.event.pull_request.base.sha }}; then
+            echo "Pull request can be merged."
+            echo "::set-output name=mergeable::true"
+          else
+            echo "Pull request cannot be merged due to conflicts."
+            echo "::set-output name=mergeable::false"
+          fi
+
+      - name: Merge feature/xxx -> develop
+        uses: devmasx/merge-branch@develop
+        with:
+          type: now
+          target_branch: develop
