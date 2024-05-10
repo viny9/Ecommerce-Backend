@@ -12,7 +12,7 @@ export class CardService {
   constructor(private repository: CardRepository) {}
 
   async addCardToUser(createCardDto: CreateCardDto): Promise<GetCardDto> {
-    const exists = this.repository.checkIfExists(
+    const exists = await this.repository.checkIfExists(
       'userId',
       createCardDto.userId,
     );

@@ -6,7 +6,7 @@ import { PromotionProductDto } from './dto/promotion-product.dto';
 import { PromotionEntity } from './entities/promotion.entity';
 import { PromotionProductEntity } from './entities/Promotion-product.entity';
 import { AlredyExistsException } from 'src/shared/exceptions/AlredyExistsException';
-import { productEntity } from '../product/entitys/product.entity';
+import { ProductEntity } from '../product/entitys/product.entity';
 
 @Injectable()
 export class PromotionService {
@@ -45,7 +45,7 @@ export class PromotionService {
   async findProductsByPromotionId(promotionId: string) {
     const res = await this.repository.findAllProductByPromotionId(promotionId);
     return res.map(({ product }) => {
-      return productEntity.toDto(product);
+      return ProductEntity.toDto(product);
     });
   }
 

@@ -44,7 +44,7 @@ export class OrderService {
     id: string,
     updateOrderDto: UpdateOrderDto,
   ): Promise<GetOrderDto> {
-    const exists = this.repository.checkIfExists('id', id);
+    const exists = await this.repository.checkIfExists('id', id);
     if (!exists)
       throw new NotFoundException('Nenhum pedido com esse id foi encontrado');
 

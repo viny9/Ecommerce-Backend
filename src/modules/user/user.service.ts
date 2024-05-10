@@ -13,7 +13,10 @@ export class UserService {
   constructor(private repository: UserRepository) {}
 
   async newUser(createUserDto: CreateUserDto) {
-    const exists = this.repository.checkIfExists('email', createUserDto.email);
+    const exists = await this.repository.checkIfExists(
+      'email',
+      createUserDto.email,
+    );
     if (exists)
       throw new BadRequestException('User alredy exists with this email.');
 
@@ -36,7 +39,7 @@ export class UserService {
   }
 
   async updateUserById(userId: string, updateUserDto: UpdateUserDto) {
-    const exists = this.repository.checkIfExists('id', userId);
+    const exists = await this.repository.checkIfExists('id', userId);
     if (!exists) throw new NotFoundException('Couldnt found User with this id');
 
     const user = await this.repository.update(userId, updateUserDto);
@@ -44,7 +47,7 @@ export class UserService {
   }
 
   async removeUser(userId: string) {
-    const exists = this.repository.checkIfExists('id', userId);
+    const exists = await this.repository.checkIfExists('id', userId);
     if (!exists) throw new NotFoundException('Couldnt found User with this id');
 
     const user = await this.repository.delete(userId);
