@@ -16,10 +16,15 @@ export class AddressEntity implements Address {
   updatedAt: Date;
   deletedAt: Date;
 
-  public static toEntity(userId: string, createAddressDto: CreateAddressDto) {
+  public static toEntity(
+    userId: string,
+    createAddressDto: CreateAddressDto,
+    orderId?: string,
+  ) {
     return Object.assign(new AddressEntity(), {
       ...createAddressDto,
       userId,
+      orderId,
     });
   }
 

@@ -9,7 +9,7 @@ import { GetOrderDto } from './dto/get-order.dto';
 export class OrderService {
   constructor(private repository: OrderRepository) {}
 
-  async newOrder(createOrderDto: CreateOrderDto): Promise<GetOrderDto> {
+  async newOrder(createOrderDto: CreateOrderDto) {
     const order = OrderEntity.toEntity(createOrderDto);
     const res = await this.repository.save(order);
 
