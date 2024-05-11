@@ -6,7 +6,7 @@ import { PromotionProductDto } from './dto/promotion-product.dto';
 import { PromotionEntity } from './entities/promotion.entity';
 import { PromotionProductEntity } from './entities/Promotion-product.entity';
 import { AlredyExistsException } from 'src/shared/exceptions/AlredyExistsException';
-import { productEntity } from '../product/entitys/product.entity';
+import { ProductEntity } from '../product/entitys/product.entity';
 
 @Injectable()
 export class PromotionService {
@@ -45,7 +45,7 @@ export class PromotionService {
   async findProductsByPromotionId(promotionId: string) {
     const res = await this.repository.findAllProductByPromotionId(promotionId);
     return res.map(({ product }) => {
-      return productEntity.toDto(product);
+      return ProductEntity.toDto(product);
     });
   }
 
@@ -53,14 +53,16 @@ export class PromotionService {
     const exists = await this.repository.checkIfExists('id', id);
     if (!exists) throw new NotFoundException('Nenhuma promoção com este id');
 
-    return await this.repository.update(id, updatePromotionDto);
+    const res = await this.repository.update(id, updatePromotionDto);
+    return PromotionEntity.toDto(res);
   }
 
   async removePromotion(id: string) {
     const exists = await this.repository.checkIfExists('id', id);
     if (!exists) throw new NotFoundException('Nenhuma promoção com este id');
 
-    return await this.repository.delete(id);
+    const res = await this.repository.delete(id);
+    return PromotionEntity.toDto(res);
   }
 
   async addPromotionProduct(
@@ -71,38 +73,48 @@ export class PromotionService {
       promotionProduct = [promotionProduct];
     }
 
+    await Promise.all(
+      promotionProduct.map(async (product) => {
+        const exists = await this.repository.findProductOnPromotionById(
+          promotionId,
+          product.productId,
+        );
+
+        if (exists)
+          throw new AlredyExistsException(
+            `Product ${product.productId} alredy in promotion`,
+          );
+      }),
+    );
+
     const product = PromotionProductEntity.toEntityArray(
       promotionId,
       promotionProduct,
     );
 
-    product.forEach((product) => {
-      const exists = this.repository.findProductOnPromotionById(
-        product.promotionId,
-        product.productId,
-      );
-
-      if (exists)
-        throw new AlredyExistsException('Este produto já está em uma promoção');
-    });
-
     return await this.repository.addPromotionProduct(product);
   }
 
-  async removePromotionProduct(promotionId: string, productId: string) {
-    const exists = this.repository.findProductOnPromotionById(
-      promotionId,
-      productId,
+  async removePromotionProduct(promotionId: string, products: string[]) {
+    await Promise.all(
+      products.map(async (id) => {
+        const exists = await this.repository.findProductOnPromotionById(
+          promotionId,
+          id,
+        );
+
+        if (!exists)
+          throw new AlredyExistsException(`Unable to find ${id} in promotion`);
+      }),
     );
 
-    if (!exists)
-      throw new NotFoundException(
-        'Nenhum producto com esse id foi acho nessa promoção',
+    return products.map(async (productId) => {
+      const res = await this.repository.removePromotionProductById(
+        productId,
+        promotionId,
       );
 
-    return await this.repository.removePromotionProductById(
-      productId,
-      promotionId,
-    );
+      return ProductEntity.toDto(res.product);
+    });
   }
 }

@@ -1,13 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import Repository from './abstract.repository';
-import { PromotionEntity } from 'src/modules/promotion/entities/promotion.entity';
 import { PrismaService } from '../prisma.service';
 import { PromotionProductEntity } from 'src/modules/promotion/entities/Promotion-product.entity';
+import { Prisma } from '@prisma/client';
+import { PromotionEntity } from 'src/modules/promotion/entities/promotion.entity';
 
 @Injectable()
-export class PromotionRepository extends Repository<PromotionEntity> {
+export class PromotionRepository extends Repository<
+  PromotionEntity,
+  Prisma.PromotionInclude
+> {
   constructor(protected prisma: PrismaService) {
-    super(prisma, 'promotion');
+    const includes: Prisma.PromotionInclude = {
+      products: {
+        include: {
+          product: {
+            include: {
+              category: true,
+              imgs: true,
+              promotionProduct: true,
+            },
+          },
+        },
+      },
+    };
+    super(prisma, 'promotion', includes);
   }
 
   async addPromotionProduct(productPromotion: PromotionProductEntity[]) {
@@ -24,6 +41,7 @@ export class PromotionRepository extends Repository<PromotionEntity> {
           include: {
             imgs: true,
             category: true,
+            promotionProduct: true,
           },
         },
       },
@@ -38,12 +56,30 @@ export class PromotionRepository extends Repository<PromotionEntity> {
           promotionId,
         },
       },
+      include: {
+        product: {
+          include: {
+            category: true,
+            imgs: true,
+            promotionProduct: true,
+          },
+        },
+      },
     });
   }
 
   async removePromotionProductById(productId: string, promotionId: string) {
     return await this.prisma.promotionProduct.delete({
       where: { productId_promotionId: { productId, promotionId } },
+      include: {
+        product: {
+          include: {
+            category: true,
+            imgs: true,
+            promotionProduct: true,
+          },
+        },
+      },
     });
   }
 }

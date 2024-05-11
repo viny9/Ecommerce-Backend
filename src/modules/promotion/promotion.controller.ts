@@ -57,11 +57,14 @@ export class PromotionController {
     return this.promotionService.addPromotionProduct(id, promotionProductDto);
   }
 
-  @Delete(':promotionId/product/:productId')
+  @Delete(':id/product')
   async removePromotionProductById(
-    @Param('promotionId') promotionId: string,
-    @Param('productId') productId: string,
+    @Param('id') promotionId: string,
+    @Body() productsIds: string[],
   ) {
-    return this.promotionService.removePromotionProduct(promotionId, productId);
+    return this.promotionService.removePromotionProduct(
+      promotionId,
+      productsIds,
+    );
   }
 }
