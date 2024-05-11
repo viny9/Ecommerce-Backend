@@ -2,7 +2,7 @@ import { CreatePromotionDto } from './../dto/create-promotion.dto';
 import { GetPromotionDto } from '../dto/get-promotion.dto';
 import { PromotionProductEntity } from './Promotion-product.entity';
 import { Promotion } from '@prisma/client';
-import { productEntity } from 'src/modules/product/entitys/product.entity';
+import { ProductEntity } from 'src/modules/product/entitys/product.entity';
 
 export class PromotionEntity implements Promotion {
   id: string;
@@ -27,7 +27,7 @@ export class PromotionEntity implements Promotion {
       endAt: promotion.endAt,
       description: promotion.description,
       products: promotion.products.map(({ product }) => {
-        return productEntity.toDto(product);
+        return ProductEntity.toDto(product);
       }),
     };
   }

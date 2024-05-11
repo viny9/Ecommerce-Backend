@@ -5,12 +5,16 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserRepository } from 'src/database/repositorys/user-repository';
+import { UserRepository } from 'src/database/repositorys/user.repository';
 import { UserEntity } from './entitys/user.entity';
+import { AddressRepository } from 'src/database/repositorys/address.repository';
 
 @Injectable()
 export class UserService {
-  constructor(private repository: UserRepository) {}
+  constructor(
+    private repository: UserRepository,
+    private addressRepository: AddressRepository,
+  ) {}
 
   async newUser(createUserDto: CreateUserDto) {
     const exists = await this.repository.checkIfExists(
@@ -50,7 +54,9 @@ export class UserService {
     const exists = await this.repository.checkIfExists('id', userId);
     if (!exists) throw new NotFoundException('Couldnt found User with this id');
 
-    const user = await this.repository.delete(userId);
+    const user: UserEntity = await this.repository.delete(userId);
+
+    if (user.address) await this.addressRepository.delete(user.address.id);
     return UserEntity.toDto(user);
   }
 }

@@ -10,10 +10,15 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AddressService } from '../address/address.service';
+import { CreateAddressDto } from '../address/dto/create-address.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly addressService: AddressService,
+  ) {}
 
   @Post()
   createUser(@Body() createUserDto: CreateUserDto) {
@@ -38,5 +43,18 @@ export class UserController {
   @Delete(':id')
   deleteUser(@Param('id') id: string) {
     return this.userService.removeUser(id);
+  }
+
+  @Get(':id/address')
+  getAddressByUserId(@Param('id') id: string) {
+    return this.addressService.findAddressByUserId(id);
+  }
+
+  @Post(':id/address')
+  createAddress(
+    @Param('id') id: string,
+    @Body() createAddressDto: CreateAddressDto,
+  ) {
+    return this.addressService.create(id, createAddressDto);
   }
 }

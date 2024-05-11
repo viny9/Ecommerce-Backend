@@ -1,6 +1,6 @@
 import { Cart } from '@prisma/client';
 import { GetCartDto } from '../dto/get-cart.dto';
-import { productEntity } from 'src/modules/product/entitys/product.entity';
+import { ProductEntity } from 'src/modules/product/entitys/product.entity';
 import { CartItemEntity } from './cart-item.entity';
 
 export class CartEntity implements Cart {
@@ -20,7 +20,7 @@ export class CartEntity implements Cart {
       id: cart.id,
       userId: cart.userId,
       products: cart.products.map((product) =>
-        productEntity.toDto(product.product),
+        ProductEntity.toDto(product.product),
       ),
     };
   }

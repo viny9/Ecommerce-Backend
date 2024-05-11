@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ProductRepository } from 'src/database/repositorys/product-repository';
+import { ProductRepository } from 'src/database/repositorys/product.repository';
 import { ProductEntity } from './entitys/product.entity';
 import { AlredyExistsException } from 'src/shared/exceptions/AlredyExistsException';
 import { ImgEntity } from './entitys/Img.entity';
@@ -65,11 +65,35 @@ export class ProductService {
   }
 
   private async addImgsToProduct(productId: string, newImgs: ImgDto[]) {
+    newImgs.forEach(async (img) => {
+      const imgIsAlredySet = await this.repository.findProductImgByUrl(
+        img.url,
+        productId,
+      );
+
+      if (imgIsAlredySet)
+        throw new AlredyExistsException(
+          'Img alredy with this url is alredy in use',
+        );
+    });
+
     const imgs = ImgEntity.toEntityArray(newImgs, productId);
     await this.repository.addProductImgs(imgs);
   }
 
   private async removeProductImgs(productId: string, removedImgs?: ImgDto[]) {
+    removedImgs.forEach(async (img) => {
+      const imgExists = await this.repository.findProductImgById(
+        img.id,
+        productId,
+      );
+
+      if (!imgExists)
+        throw new AlredyExistsException(
+          'Unable to find img with this id to remove',
+        );
+    });
+
     const imgsToRemove = ImgEntity.toEntityArray(removedImgs, productId);
     await this.repository.deleteImgsFromProduct(imgsToRemove);
   }

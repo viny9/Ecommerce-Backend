@@ -19,6 +19,24 @@ export class ProductRepository extends Repository<
     super(prisma, 'product', includes);
   }
 
+  async findProductImgById(id: string, productId: string) {
+    return await this.prisma.productImg.findUnique({
+      where: {
+        id,
+        productId,
+      },
+    });
+  }
+
+  async findProductImgByUrl(url: string, productId: string) {
+    return await this.prisma.productImg.findUnique({
+      where: {
+        imgUrl: url,
+        productId,
+      },
+    });
+  }
+
   async addProductImgs(imgs: ProductImg[]) {
     return await this.prisma.productImg.createMany({
       data: imgs,

@@ -1,10 +1,10 @@
 import { OrderItem } from '@prisma/client';
-import { productEntity } from 'src/modules/product/entitys/product.entity';
+import { ProductEntity } from 'src/modules/product/entitys/product.entity';
 
 export class OrderItemEntity implements OrderItem {
   productId: string;
   orderId: string;
-  product: productEntity;
+  product: ProductEntity;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;

@@ -192,7 +192,7 @@ model PromotionProduct {
 
 model ProductImg {
   id     String @id @default(uuid())
-  imgUrl String
+  imgUrl String @unique
 
   productId String?
   product   Product? @relation(fields: [productId], references: [id])

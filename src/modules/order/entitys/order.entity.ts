@@ -2,7 +2,7 @@ import { $Enums, Order } from '@prisma/client';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { OrderItemEntity } from './ordem-item.entity';
 import { GetOrderDto } from '../dto/get-order.dto';
-import { productEntity } from 'src/modules/product/entitys/product.entity';
+import { ProductEntity } from 'src/modules/product/entitys/product.entity';
 
 export class OrderEntity implements Order {
   id: string;
@@ -35,7 +35,7 @@ export class OrderEntity implements Order {
       shippingCost: order.shippingCost,
       installments: order.installments,
       products: order.products.map(({ product }) => {
-        return productEntity.toDto(product);
+        return ProductEntity.toDto(product);
       }),
     };
   }
