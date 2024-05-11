@@ -1,5 +1,5 @@
-import { ProductImg } from '@prisma/client';
 import { IsNotEmpty, IsOptional } from 'class-validator';
+import { ImgDto } from './img.dto';
 
 export class CreateProductDto {
   @IsNotEmpty()
@@ -12,5 +12,5 @@ export class CreateProductDto {
   categoryId: string;
 
   @IsOptional()
-  imgs: ProductImg[];
+  imgs: ImgDto[];
 }

@@ -5,15 +5,22 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserRepository } from 'src/database/repositorys/user-repository';
+import { UserRepository } from 'src/database/repositorys/user.repository';
 import { UserEntity } from './entitys/user.entity';
+import { AddressRepository } from 'src/database/repositorys/address.repository';
 
 @Injectable()
 export class UserService {
-  constructor(private repository: UserRepository) {}
+  constructor(
+    private repository: UserRepository,
+    private addressRepository: AddressRepository,
+  ) {}
 
   async newUser(createUserDto: CreateUserDto) {
-    const exists = this.repository.checkIfExists('email', createUserDto.email);
+    const exists = await this.repository.checkIfExists(
+      'email',
+      createUserDto.email,
+    );
     if (exists)
       throw new BadRequestException('User alredy exists with this email.');
 
@@ -36,7 +43,7 @@ export class UserService {
   }
 
   async updateUserById(userId: string, updateUserDto: UpdateUserDto) {
-    const exists = this.repository.checkIfExists('id', userId);
+    const exists = await this.repository.checkIfExists('id', userId);
     if (!exists) throw new NotFoundException('Couldnt found User with this id');
 
     const user = await this.repository.update(userId, updateUserDto);
@@ -44,10 +51,12 @@ export class UserService {
   }
 
   async removeUser(userId: string) {
-    const exists = this.repository.checkIfExists('id', userId);
+    const exists = await this.repository.checkIfExists('id', userId);
     if (!exists) throw new NotFoundException('Couldnt found User with this id');
 
-    const user = await this.repository.delete(userId);
+    const user: UserEntity = await this.repository.delete(userId);
+
+    if (user.address) await this.addressRepository.delete(user.address.id);
     return UserEntity.toDto(user);
   }
 }

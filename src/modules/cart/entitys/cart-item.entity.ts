@@ -1,10 +1,10 @@
 import { CartItem } from '@prisma/client';
-import { productEntity } from 'src/modules/product/entitys/product.entity';
+import { ProductEntity } from 'src/modules/product/entitys/product.entity';
 
 export class CartItemEntity implements CartItem {
   productId: string;
   cartId: string;
-  product: productEntity;
+  product: ProductEntity;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;

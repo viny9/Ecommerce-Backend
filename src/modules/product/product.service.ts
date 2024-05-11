@@ -1,9 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ProductRepository } from 'src/database/repositorys/product-repository';
-import { productEntity } from './entitys/product.entity';
+import { ProductRepository } from 'src/database/repositorys/product.repository';
+import { ProductEntity } from './entitys/product.entity';
 import { AlredyExistsException } from 'src/shared/exceptions/AlredyExistsException';
+import { ImgEntity } from './entitys/Img.entity';
+import { ImgDto } from './dto/img.dto';
 
 @Injectable()
 export class ProductService {
@@ -15,18 +17,24 @@ export class ProductService {
       createProductDto.name,
     );
 
-    if (exists)
-      throw new AlredyExistsException('Produto com esse nome já existe');
+    if (exists) throw new AlredyExistsException('Product alredy exists');
 
-    const products = productEntity.toEntity(createProductDto);
-    this.repository.save(products);
+    const products = ProductEntity.toEntity(createProductDto);
+    delete products.imgs;
+
+    const res = await this.repository.save(products);
+
+    if (createProductDto.imgs.length > 0) {
+      const imgs = ImgEntity.toEntityArray(createProductDto.imgs, res.id);
+      await this.repository.addProductImgs(imgs);
+    }
   }
 
   async findAllProducts() {
     const products = await this.repository.findAll();
 
-    return products.map((product: productEntity) => {
-      return productEntity.toDto(product);
+    return products.map((product) => {
+      return ProductEntity.toDto(product);
     });
   }
 
@@ -35,7 +43,7 @@ export class ProductService {
     if (!product)
       throw new NotFoundException('Nenhum produto com esse id foi encontrado');
 
-    return productEntity.toDto(product);
+    return ProductEntity.toDto(product);
   }
 
   async updateProductById(id: string, updateProductDto: UpdateProductDto) {
@@ -43,8 +51,51 @@ export class ProductService {
     if (!exists)
       throw new NotFoundException('Nenhum produto com esse id foi encontrado');
 
+    if (updateProductDto.imgs)
+      await this.addImgsToProduct(id, updateProductDto.imgs);
+
+    if (updateProductDto.removedImgs)
+      await this.removeProductImgs(id, updateProductDto.removedImgs);
+
+    delete updateProductDto.imgs;
+    delete updateProductDto.removedImgs;
     const updatedProduct = await this.repository.update(id, updateProductDto);
-    return productEntity.toDto(updatedProduct);
+
+    return ProductEntity.toDto(updatedProduct);
+  }
+
+  private async addImgsToProduct(productId: string, newImgs: ImgDto[]) {
+    newImgs.forEach(async (img) => {
+      const imgIsAlredySet = await this.repository.findProductImgByUrl(
+        img.url,
+        productId,
+      );
+
+      if (imgIsAlredySet)
+        throw new AlredyExistsException(
+          'Img alredy with this url is alredy in use',
+        );
+    });
+
+    const imgs = ImgEntity.toEntityArray(newImgs, productId);
+    await this.repository.addProductImgs(imgs);
+  }
+
+  private async removeProductImgs(productId: string, removedImgs?: ImgDto[]) {
+    removedImgs.forEach(async (img) => {
+      const imgExists = await this.repository.findProductImgById(
+        img.id,
+        productId,
+      );
+
+      if (!imgExists)
+        throw new AlredyExistsException(
+          'Unable to find img with this id to remove',
+        );
+    });
+
+    const imgsToRemove = ImgEntity.toEntityArray(removedImgs, productId);
+    await this.repository.deleteImgsFromProduct(imgsToRemove);
   }
 
   async removeProduct(id: string) {
@@ -52,7 +103,10 @@ export class ProductService {
     if (!exists)
       throw new NotFoundException('Nenhum produto com esse id foi encontrado');
 
-    const product = await this.repository.delete(id);
-    return productEntity.toDto(product);
+    const product: ProductEntity = await this.repository.delete(id);
+    if (product.imgs)
+      await this.repository.deleteAllImgsFromProduct(product.id);
+
+    return ProductEntity.toDto(product);
   }
 }

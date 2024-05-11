@@ -64,8 +64,8 @@ export class ListRepository extends Repository<List, Prisma.ListInclude> {
   ): Promise<ListItemEntity> {
     return await this.prisma.listItem.create({
       data: {
-        productId,
-        listId,
+        listId: listId,
+        productId: productId,
       },
       include: {
         product: {

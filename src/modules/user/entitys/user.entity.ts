@@ -33,8 +33,6 @@ export class UserEntity implements User {
       name: user.name,
       phone: user.phone,
       isAdmin: user.isAdmin,
-      address: this.toAddressDto(user.address),
-      card: CardEntity.toDto(user.card) || null,
     };
   }
 

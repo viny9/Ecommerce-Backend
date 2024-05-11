@@ -1,7 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateProductDto } from './create-product.dto';
 import { IsOptional } from 'class-validator';
-import { ProductImg } from '@prisma/client';
+import { ImgDto } from './img.dto';
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {
   @IsOptional()
@@ -11,7 +11,10 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
   price: number;
 
   @IsOptional()
-  imgs: ProductImg[];
+  imgs: ImgDto[];
+
+  @IsOptional()
+  removedImgs: ImgDto[];
 
   @IsOptional()
   categoryId?: string;

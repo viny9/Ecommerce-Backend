@@ -1,9 +1,9 @@
 import { ListItem } from '@prisma/client';
-import { productEntity } from 'src/modules/product/entitys/product.entity';
+import { ProductEntity } from 'src/modules/product/entitys/product.entity';
 
 export class ListItemEntity implements ListItem {
   productId: string;
-  product?: productEntity;
+  product?: ProductEntity;
   listId: string;
   createdAt: Date;
   updatedAt: Date;

@@ -4,8 +4,9 @@ import { ImgDto } from '../dto/img.dto';
 import { GetProductDto } from '../dto/get-product.dto';
 import { PromotionProductEntity } from 'src/modules/promotion/entities/Promotion-product.entity';
 import { CategoryEntity } from 'src/modules/category/entitys/category.entity';
+import { ImgEntity } from './Img.entity';
 
-export class productEntity implements Product {
+export class ProductEntity implements Product {
   id: string;
   name: string;
   price: number;
@@ -17,12 +18,12 @@ export class productEntity implements Product {
   updatedAt: Date;
   deletedAt: Date;
 
-  public static toEntity(createProductDto: CreateProductDto): productEntity {
-    return Object.assign(new productEntity(), createProductDto);
+  public static toEntity(createProductDto: CreateProductDto): ProductEntity {
+    return Object.assign(new ProductEntity(), createProductDto);
   }
 
-  public static toDto(product: productEntity): GetProductDto {
-    const imgsDto: ImgDto[] = this.imgsDto(product.imgs);
+  public static toDto(product: ProductEntity): GetProductDto {
+    const imgsDto: ImgDto[] = ImgEntity.toDtoArray(product.imgs);
     const categoryDto = CategoryEntity.toDto(product.category);
 
     let promotionalValue: number = null;
@@ -45,16 +46,10 @@ export class productEntity implements Product {
     };
   }
 
-  private static imgsDto(imgs: ProductImg[]): ImgDto[] {
-    return imgs.map((img) => {
-      return new ImgDto(img.id, img.imgUrl);
-    });
-  }
-
   private static calcPromotionalPrice(
     percentage: number,
     currentPrice: number,
-  ) {
+  ): number {
     const percentageInDecimal = percentage / 100;
     const discountedValue = currentPrice - currentPrice * percentageInDecimal;
     const formatedValue = Number(discountedValue.toFixed(2));
