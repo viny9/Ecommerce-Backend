@@ -8,10 +8,10 @@ import {
   Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AddressService } from '../address/address.service';
 import { CreateAddressDto } from '../address/dto/create-address.dto';
+import { IsAdmin } from 'src/shared/decorators/is-admin.decorator';
 
 @Controller('user')
 export class UserController {
@@ -20,12 +20,8 @@ export class UserController {
     private readonly addressService: AddressService,
   ) {}
 
-  @Post()
-  createUser(@Body() createUserDto: CreateUserDto) {
-    return this.userService.newUser(createUserDto);
-  }
-
   @Get()
+  @IsAdmin()
   getUsers() {
     return this.userService.findAllUsers();
   }

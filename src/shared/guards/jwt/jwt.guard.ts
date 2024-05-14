@@ -6,9 +6,11 @@ export class JwtGuard extends AuthGuard('jwt') {
   constructor() {
     super();
   }
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const routePath = context.switchToHttp().getRequest().route.path;
-    if (routePath === '/login') return true;
+    if (routePath === '/auth/login' || routePath === '/auth/signup')
+      return true;
 
     const canActivate = await super.canActivate(context);
 

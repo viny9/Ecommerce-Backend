@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from 'src/database/repositorys/user.repository';
 import { UserEntity } from './entitys/user.entity';
@@ -15,20 +10,6 @@ export class UserService {
     private repository: UserRepository,
     private addressRepository: AddressRepository,
   ) {}
-
-  async newUser(createUserDto: CreateUserDto) {
-    const exists = await this.repository.checkIfExists(
-      'email',
-      createUserDto.email,
-    );
-    if (exists)
-      throw new BadRequestException('User alredy exists with this email.');
-
-    const user = UserEntity.toEntity(createUserDto);
-    const res = await this.repository.save(user);
-
-    return UserEntity.toDto(res);
-  }
 
   async findAllUsers() {
     const users = await this.repository.findAll();

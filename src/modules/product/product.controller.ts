@@ -10,12 +10,14 @@ import {
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { IsAdmin } from 'src/shared/decorators/is-admin.decorator';
 
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
+  @IsAdmin()
   createProduct(@Body() createProductDto: CreateProductDto) {
     return this.productService.newProduct(createProductDto);
   }
@@ -31,6 +33,7 @@ export class ProductController {
   }
 
   @Patch(':id')
+  @IsAdmin()
   updateProduct(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
@@ -39,6 +42,7 @@ export class ProductController {
   }
 
   @Delete(':id')
+  @IsAdmin()
   deleteProduct(@Param('id') id: string) {
     return this.productService.removeProduct(id);
   }

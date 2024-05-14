@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -7,6 +8,8 @@ import { LoginDto } from './dto/login.dto';
 import { UserRepository } from 'src/database/repositorys/user.repository';
 import { JwtService } from '@nestjs/jwt';
 import { LoginResponseDto } from './dto/login-response.dto';
+import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
+import { UserEntity } from 'src/modules/user/entitys/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -33,5 +36,20 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async newUser(createUserDto: CreateUserDto) {
+    const exists = await this.userRepository.checkIfExists(
+      'email',
+      createUserDto.email,
+    );
+
+    if (exists)
+      throw new BadRequestException('User alredy exists with this email.');
+
+    const user = UserEntity.toEntity(createUserDto);
+    const res = await this.userRepository.save(user);
+
+    return UserEntity.toDto(res);
   }
 }
