@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Param, Put } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { IsAdmin } from 'src/shared/decorators/is-admin.decorator';
 
 @Controller('order')
 export class OrderController {
@@ -12,7 +13,8 @@ export class OrderController {
     return this.orderService.newOrder(createOrderDto);
   }
 
-  @Get('')
+  @Get()
+  @IsAdmin()
   getAllOrders() {
     return this.orderService.findAllOrders();
   }
@@ -28,6 +30,7 @@ export class OrderController {
   }
 
   @Put(':id')
+  @IsAdmin()
   updateOrderStatus(
     @Param('id') id: string,
     @Body() updateOrderDto: UpdateOrderDto,

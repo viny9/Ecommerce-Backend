@@ -10,6 +10,7 @@ import { CardModule } from './card/card.module';
 import { OrderModule } from './order/order.module';
 import { PromotionModule } from './promotion/promotion.module';
 import { AddressModule } from './address/address.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AddressModule } from './address/address.module';
     OrderModule,
     PromotionModule,
     AddressModule,
+    AuthModule,
   ],
   providers: [PrismaService],
 })
