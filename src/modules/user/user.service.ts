@@ -35,6 +35,14 @@ export class UserService {
     return users.map((user: UserEntity) => UserEntity.toDto(user));
   }
 
+  async findUserByEmail(email: string) {
+    const user = await this.repository.findByEmail(email);
+    if (!user)
+      throw new NotFoundException('Couldnt found User with this email');
+
+    return UserEntity.toDto(user);
+  }
+
   async findUserById(userId: string) {
     const user = await this.repository.findById(userId);
     if (!user) throw new NotFoundException('Couldnt found User with this id');
