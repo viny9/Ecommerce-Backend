@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
 import { UserEntity } from 'src/modules/user/entitys/user.entity';
+import { compare, hash } from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +25,8 @@ export class AuthService {
     if (!user)
       throw new NotFoundException('Unable to find user with this email');
 
-    if (password != user.password)
+    const passwordMatch = await compare(password, user.password);
+    if (!passwordMatch)
       throw new UnauthorizedException('Email or password incorrect');
 
     const payload = {
@@ -48,6 +50,8 @@ export class AuthService {
       throw new BadRequestException('User alredy exists with this email.');
 
     const user = UserEntity.toEntity(createUserDto);
+    user.password = await hash(user.password, 10);
+
     const res = await this.userRepository.save(user);
 
     return UserEntity.toDto(res);
