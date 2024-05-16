@@ -170,27 +170,6 @@ describe('User service', () => {
   });
 
   describe('removeUser', () => {
-    beforeEach(() => {
-      jest.spyOn(userRepository, 'checkIfExists').mockResolvedValue(true);
-      jest.spyOn(userRepository, 'delete').mockImplementation(async (id) => {
-        const userIndex = users.findIndex((user) => user.id === id);
-        const removedUser = users[userIndex];
-        users.splice(userIndex, 1);
-
-        return removedUser;
-      });
-
-      jest.spyOn(addressRepository, 'delete').mockImplementation(async (id) => {
-        const addressIndex = addresses.findIndex(
-          (address) => address.id === id,
-        );
-        const removedAddress = addresses[addressIndex];
-        addresses.splice(addressIndex, 1);
-
-        return removedAddress;
-      });
-    });
-
     const addresses: Address[] = [
       {
         id: '1dsa',
@@ -222,8 +201,29 @@ describe('User service', () => {
       },
     ];
 
+    beforeEach(() => {
+      jest.spyOn(userRepository, 'checkIfExists').mockResolvedValue(true);
+      jest.spyOn(userRepository, 'delete').mockImplementation(async (id) => {
+        const userIndex = users.findIndex((user) => user.id === id);
+        const removedUser = users[userIndex];
+        users.splice(userIndex, 1);
+
+        return removedUser;
+      });
+
+      jest.spyOn(addressRepository, 'delete').mockImplementation(async (id) => {
+        const addressIndex = addresses.findIndex(
+          (address) => address.id === id,
+        );
+        const removedAddress = addresses[addressIndex];
+        addresses.splice(addressIndex, 1);
+
+        return removedAddress;
+      });
+    });
+
     it('Should delete an user and return the obj in Dto format', async () => {
-      const deletedUser = await userService.removeUser('1');
+      const deletedUser = await userService.removeUser('2');
       const exists = users
         .map((user) => user.id === deletedUser.id ?? true)
         .includes(true);
