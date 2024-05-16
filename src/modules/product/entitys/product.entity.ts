@@ -5,6 +5,7 @@ import { GetProductDto } from '../dto/get-product.dto';
 import { PromotionProductEntity } from 'src/modules/promotion/entities/Promotion-product.entity';
 import { CategoryEntity } from 'src/modules/category/entitys/category.entity';
 import { ImgEntity } from './Img.entity';
+import { GetCategoryDto } from 'src/modules/category/dto/get-category.dto';
 
 export class ProductEntity implements Product {
   id: string;
@@ -23,17 +24,26 @@ export class ProductEntity implements Product {
   }
 
   public static toDto(product: ProductEntity): GetProductDto {
-    const imgsDto: ImgDto[] = ImgEntity.toDtoArray(product.imgs);
-    const categoryDto = CategoryEntity.toDto(product.category);
+    let imgsDto: ImgDto[] = null;
+    if (product.imgs) {
+      imgsDto = ImgEntity.toDtoArray(product.imgs);
+    }
+
+    let categoryDto: GetCategoryDto = null;
+    if (product.category) {
+      categoryDto = CategoryEntity.toDto(product.category);
+    }
 
     let promotionalValue: number = null;
-    const promotion = product.promotionProduct[0] || null;
+    if (product.promotionProduct) {
+      const promotion = product?.promotionProduct[0] || null;
 
-    if (promotion) {
-      promotionalValue = this.calcPromotionalPrice(
-        promotion.percentage,
-        product.price,
-      );
+      if (promotion) {
+        promotionalValue = this.calcPromotionalPrice(
+          promotion.percentage,
+          product.price,
+        );
+      }
     }
 
     return {

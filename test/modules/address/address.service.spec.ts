@@ -4,14 +4,17 @@ import { Test } from '@nestjs/testing';
 import { Address } from '@prisma/client';
 import { DatabaseModule } from 'src/database/database.module';
 import { AddressRepository } from 'src/database/repositorys/address.repository';
-import { CreateAddressDto } from 'src/modules/address/dto/create-address.dto';
-import { GetAddressDto } from 'src/modules/address/dto/get-address.dto';
 import { UpdateAddressDto } from 'src/modules/address/dto/update-address.dto';
 import { AddressEntity } from 'src/modules/address/entities/address.entity';
+import { addressMock } from 'test/mocks/address.mock';
 
 describe('Address service', () => {
   let addressService: AddressService;
   let addressRepository: AddressRepository;
+
+  const addressesMock = addressMock.createAddresses();
+  const createAddressDtoMock = addressMock.createAddressDto();
+  const getAddressDtoMock = addressMock.createGetAddressDto();
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -22,57 +25,6 @@ describe('Address service', () => {
     addressService = moduleRef.get<AddressService>(AddressService);
     addressRepository = moduleRef.get<AddressRepository>(AddressRepository);
   });
-
-  const addresses: Address[] = [
-    {
-      id: '1',
-      cep: 'adasdsasdasd',
-      city: 'dsdsd',
-      extra: 'assa',
-      state: 'ddsa',
-      number: 0,
-      neighborhood: 'sadaddasda',
-      userId: '1',
-      orderId: 'd',
-      createdAt: new Date(),
-      updatedAt: undefined,
-      deletedAt: undefined,
-    },
-    {
-      id: '2',
-      cep: 'adasdsasdasd',
-      city: 'dsdsd',
-      extra: 'assa',
-      state: 'ddsa',
-      number: 0,
-      neighborhood: 'sadaddasda',
-      userId: '2',
-      orderId: 'd',
-      createdAt: new Date(),
-      updatedAt: undefined,
-      deletedAt: undefined,
-    },
-  ];
-
-  const createAddressDto: CreateAddressDto = {
-    cep: 'xxxxxxxxx',
-    city: 'ccccccc',
-    extra: 'xx',
-    state: 'xx',
-    number: 0,
-    neighborhood: 'ccccccccc',
-    userId: '3',
-  };
-
-  const getAddressDto: GetAddressDto = {
-    id: '1',
-    cep: 'xxxxxxxxx',
-    city: 'ccccccc',
-    extra: 'xx',
-    state: 'xx',
-    number: 0,
-    neighborhood: 'ccccccccc',
-  };
 
   describe('create', () => {
     beforeEach(() => {
@@ -85,14 +37,14 @@ describe('Address service', () => {
             createdAt: new Date(),
           };
 
-          addresses.push(address);
+          addressesMock.push(address);
           return address;
         });
     });
 
     it('Should create and return an address on Dto format', async () => {
-      const address = await addressService.create('1', createAddressDto);
-      expect(address).toEqual(getAddressDto);
+      const address = await addressService.create('1', createAddressDtoMock);
+      expect(address).toEqual(getAddressDtoMock);
     });
   });
 
@@ -101,14 +53,14 @@ describe('Address service', () => {
       jest
         .spyOn(addressRepository, 'findById')
         .mockImplementation(async (id: string) =>
-          addresses.find((address) => address.id === id),
+          addressesMock.find((address) => address.id === id),
         );
     });
 
     it('Should return a user address in Dto format by id', async () => {
       const address = await addressService.findAddressById('1');
 
-      expect(address).toEqual(AddressEntity.toDto(addresses[0]));
+      expect(address).toEqual(AddressEntity.toDto(addressesMock[0]));
     });
 
     it('Should pass a wrong id and return an NotFoundException', async () => {
@@ -126,14 +78,14 @@ describe('Address service', () => {
       jest
         .spyOn(addressRepository, 'findAddressByUserId')
         .mockImplementation(async (userId: string) =>
-          addresses.find((address) => address.userId === userId),
+          addressesMock.find((address) => address.userId === userId),
         );
     });
 
     it('Should return a user address in Dto format by user id', async () => {
       const address = await addressService.findAddressByUserId('1');
 
-      expect(address).toEqual(AddressEntity.toDto(addresses[0]));
+      expect(address).toEqual(AddressEntity.toDto(addressesMock[0]));
     });
 
     it('Should pass a wrong user id and return an NotFoundException', async () => {
@@ -154,7 +106,7 @@ describe('Address service', () => {
         .spyOn(addressRepository, 'update')
         .mockImplementation(
           async (id: string, updatedAddress: UpdateAddressDto) => {
-            const address = addresses.find((address) => address.id === id);
+            const address = addressesMock.find((address) => address.id === id);
 
             return {
               ...address,

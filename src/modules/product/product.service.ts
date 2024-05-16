@@ -28,6 +28,8 @@ export class ProductService {
       const imgs = ImgEntity.toEntityArray(createProductDto.imgs, res.id);
       await this.repository.addProductImgs(imgs);
     }
+
+    return ProductEntity.toDto(res);
   }
 
   async findAllProducts() {
@@ -41,7 +43,7 @@ export class ProductService {
   async findProductById(id: string) {
     const product = await this.repository.findById(id);
     if (!product)
-      throw new NotFoundException('Nenhum produto com esse id foi encontrado');
+      throw new NotFoundException('Unable to find product with this id');
 
     return ProductEntity.toDto(product);
   }
