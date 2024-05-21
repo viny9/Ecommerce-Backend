@@ -18,6 +18,9 @@ lerna-debug.log*
 # Task list
 .todo
 
+# Dev enviroment Img uploads folder
+uploads
+
 # Tests
 /coverage
 /.nyc_output
