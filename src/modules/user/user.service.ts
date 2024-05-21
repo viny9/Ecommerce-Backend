@@ -19,21 +19,22 @@ export class UserService {
   async findUserByEmail(email: string) {
     const user = await this.repository.findByEmail(email);
     if (!user)
-      throw new NotFoundException('Couldnt found User with this email');
+      throw new NotFoundException('Unable to found User with this email');
 
     return UserEntity.toDto(user);
   }
 
   async findUserById(userId: string) {
     const user = await this.repository.findById(userId);
-    if (!user) throw new NotFoundException('Couldnt found User with this id');
+    if (!user) throw new NotFoundException('Unable to found User with this id');
 
     return UserEntity.toDto(user);
   }
 
   async updateUserById(userId: string, updateUserDto: UpdateUserDto) {
     const exists = await this.repository.checkIfExists('id', userId);
-    if (!exists) throw new NotFoundException('Couldnt found User with this id');
+    if (!exists)
+      throw new NotFoundException('Unable to found User with this id');
 
     const user = await this.repository.update(userId, updateUserDto);
     return UserEntity.toDto(user);
@@ -41,7 +42,8 @@ export class UserService {
 
   async removeUser(userId: string) {
     const exists = await this.repository.checkIfExists('id', userId);
-    if (!exists) throw new NotFoundException('Couldnt found User with this id');
+    if (!exists)
+      throw new NotFoundException('Unable to found User with this id');
 
     const user: UserEntity = await this.repository.delete(userId);
 
