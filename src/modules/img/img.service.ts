@@ -1,24 +1,51 @@
 import { Injectable } from '@nestjs/common';
+import { ImgRepository } from 'src/database/repositorys/img.repository';
+import { ImgEntity } from './entities/Img.entity';
+import { AlredyExistsException } from 'src/shared/exceptions/AlredyExistsException';
 
 @Injectable()
 export class ImgService {
-  create() {
-    return 'This action adds a new img';
+  constructor(private repository: ImgRepository) {}
+
+  async addImgsToProduct(productId: string, newImgs: Express.Multer.File[]) {
+    const imgs = ImgEntity.toEntityArray(newImgs, productId);
+    await this.repository.addProductImgs(imgs);
+
+    return 'Images added with sucess';
   }
 
-  findAll() {
-    return `This action returns all img`;
+  async updateProductImgs(
+    productId: string,
+    newImgs: Express.Multer.File[],
+    removedImgs: string[],
+  ) {
+    if (newImgs) await this.addImgsToProduct(productId, newImgs);
+    if (removedImgs) await this.removeProductImgs(productId, removedImgs);
+
+    return 'Product images updated with sucess';
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} img`;
+  async removeProductImgs(productId: string, removedImgs?: string[]) {
+    await Promise.all(
+      removedImgs.map(async (imgId) => {
+        const imgExists = await this.repository.findProductImgById(
+          imgId,
+          productId,
+        );
+
+        if (!imgExists)
+          throw new AlredyExistsException(
+            'Unable to find img with this id to remove',
+          );
+      }),
+    );
+
+    await this.repository.deleteImgsFromProduct(removedImgs);
+
+    return 'Images removed with sucess';
   }
 
-  update(id: number) {
-    return `This action updates a #${id} img`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} img`;
+  async removeAllImgsFromProduct(productId: string) {
+    await this.repository.deleteAllImgsFromProduct(productId);
   }
 }

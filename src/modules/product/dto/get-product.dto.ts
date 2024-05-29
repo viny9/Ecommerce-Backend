@@ -1,5 +1,5 @@
 import { GetCategoryDto } from 'src/modules/category/dto/get-category.dto';
-import { ImgDto } from './img.dto';
+import { ImgDto } from '../../img/dto/img.dto';
 
 export class GetProductDto {
   constructor(

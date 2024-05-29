@@ -2,6 +2,7 @@ import { NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { DatabaseModule } from 'src/database/database.module';
 import { ProductRepository } from 'src/database/repositorys/product.repository';
+import { ImgService } from 'src/modules/img/img.service';
 import { ProductEntity } from 'src/modules/product/entitys/product.entity';
 import { ProductService } from 'src/modules/product/product.service';
 import { AlredyExistsException } from 'src/shared/exceptions/AlredyExistsException';
@@ -17,7 +18,7 @@ describe('Product service', () => {
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [DatabaseModule],
-      providers: [ProductService],
+      providers: [ProductService, ImgService],
     }).compile();
 
     productService = moduleRef.get<ProductService>(ProductService);

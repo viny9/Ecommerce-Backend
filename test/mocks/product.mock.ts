@@ -71,7 +71,6 @@ const createProductDto = (): CreateProductDto => {
     name: 'teste4',
     price: 1,
     categoryId: '2',
-    imgs: [],
   };
 };
 
@@ -79,7 +78,6 @@ const createUpdateProductDto = (): UpdateProductDto => {
   return {
     name: 'teste99',
     price: 99,
-    removedImgs: undefined,
   };
 };
 
