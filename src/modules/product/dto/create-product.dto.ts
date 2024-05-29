@@ -1,5 +1,4 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
-import { ImgDto } from './img.dto';
+import { IsNotEmpty } from 'class-validator';
 
 export class CreateProductDto {
   @IsNotEmpty()
@@ -10,7 +9,4 @@ export class CreateProductDto {
 
   @IsNotEmpty()
   categoryId: string;
-
-  @IsOptional()
-  imgs: ImgDto[];
 }

@@ -9,6 +9,7 @@ import { CardRepository } from './repositorys/card.repository';
 import { OrderRepository } from './repositorys/order.repository';
 import { PromotionRepository } from './repositorys/promotion.repository';
 import { AddressRepository } from './repositorys/address.repository';
+import { ImgRepository } from './repositorys/img.repository';
 
 @Module({
   exports: [
@@ -22,6 +23,7 @@ import { AddressRepository } from './repositorys/address.repository';
     OrderRepository,
     PromotionRepository,
     AddressRepository,
+    ImgRepository,
   ],
   providers: [
     PrismaService,
@@ -34,6 +36,7 @@ import { AddressRepository } from './repositorys/address.repository';
     OrderRepository,
     PromotionRepository,
     AddressRepository,
+    ImgRepository,
   ],
 })
 export class DatabaseModule {}

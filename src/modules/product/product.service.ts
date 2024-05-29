@@ -4,12 +4,14 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductRepository } from 'src/database/repositorys/product.repository';
 import { ProductEntity } from './entitys/product.entity';
 import { AlredyExistsException } from 'src/shared/exceptions/AlredyExistsException';
-import { ImgEntity } from './entitys/Img.entity';
-import { ImgDto } from './dto/img.dto';
+import { ImgService } from '../img/img.service';
 
 @Injectable()
 export class ProductService {
-  constructor(private repository: ProductRepository) {}
+  constructor(
+    private repository: ProductRepository,
+    private imgService: ImgService,
+  ) {}
 
   async newProduct(createProductDto: CreateProductDto) {
     const exists = await this.repository.checkIfExists(
@@ -23,12 +25,6 @@ export class ProductService {
     delete products.imgs;
 
     const res = await this.repository.save(products);
-
-    if (createProductDto.imgs.length > 0) {
-      const imgs = ImgEntity.toEntityArray(createProductDto.imgs, res.id);
-      await this.repository.addProductImgs(imgs);
-    }
-
     return ProductEntity.toDto(res);
   }
 
@@ -51,63 +47,23 @@ export class ProductService {
   async updateProductById(id: string, updateProductDto: UpdateProductDto) {
     const exists = await this.repository.checkIfExists('id', id);
     if (!exists)
-      throw new NotFoundException('Nenhum produto com esse id foi encontrado');
+      throw new NotFoundException('Unable to find product with this id');
 
-    if (updateProductDto.imgs)
-      await this.addImgsToProduct(id, updateProductDto.imgs);
-
-    if (updateProductDto.removedImgs)
-      await this.removeProductImgs(id, updateProductDto.removedImgs);
-
-    delete updateProductDto.imgs;
-    delete updateProductDto.removedImgs;
     const updatedProduct = await this.repository.update(id, updateProductDto);
 
     return ProductEntity.toDto(updatedProduct);
   }
 
-  private async addImgsToProduct(productId: string, newImgs: ImgDto[]) {
-    newImgs.forEach(async (img) => {
-      const imgIsAlredySet = await this.repository.findProductImgByUrl(
-        img.url,
-        productId,
-      );
-
-      if (imgIsAlredySet)
-        throw new AlredyExistsException(
-          'Img alredy with this url is alredy in use',
-        );
-    });
-
-    const imgs = ImgEntity.toEntityArray(newImgs, productId);
-    await this.repository.addProductImgs(imgs);
-  }
-
-  private async removeProductImgs(productId: string, removedImgs?: ImgDto[]) {
-    removedImgs.forEach(async (img) => {
-      const imgExists = await this.repository.findProductImgById(
-        img.id,
-        productId,
-      );
-
-      if (!imgExists)
-        throw new AlredyExistsException(
-          'Unable to find img with this id to remove',
-        );
-    });
-
-    const imgsToRemove = ImgEntity.toEntityArray(removedImgs, productId);
-    await this.repository.deleteImgsFromProduct(imgsToRemove);
-  }
-
   async removeProduct(id: string) {
-    const exists = await this.repository.checkIfExists('id', id);
-    if (!exists)
-      throw new NotFoundException('Nenhum produto com esse id foi encontrado');
+    const product: ProductEntity = await this.repository.findById(id);
 
-    const product: ProductEntity = await this.repository.delete(id);
+    if (!product)
+      throw new NotFoundException('Unable to find product with this id');
+
     if (product.imgs)
-      await this.repository.deleteAllImgsFromProduct(product.id);
+      await this.imgService.removeAllImgsFromProduct(product.id);
+
+    await this.repository.delete(id);
 
     return ProductEntity.toDto(product);
   }

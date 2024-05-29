@@ -1,11 +1,11 @@
 import { CreateProductDto } from '../dto/create-product.dto';
 import { Category, Product, ProductImg } from '@prisma/client';
-import { ImgDto } from '../dto/img.dto';
+import { ImgDto } from '../../img/dto/img.dto';
 import { GetProductDto } from '../dto/get-product.dto';
 import { PromotionProductEntity } from 'src/modules/promotion/entities/Promotion-product.entity';
 import { CategoryEntity } from 'src/modules/category/entitys/category.entity';
-import { ImgEntity } from './Img.entity';
 import { GetCategoryDto } from 'src/modules/category/dto/get-category.dto';
+import { ImgEntity } from 'src/modules/img/entities/Img.entity';
 
 export class ProductEntity implements Product {
   id: string;

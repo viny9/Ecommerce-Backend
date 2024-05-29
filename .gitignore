@@ -18,6 +18,9 @@ lerna-debug.log*
 # Task list
 .todo
 
+# Dev enviroment Img uploads folder
+uploads
+
 # Tests
 /coverage
 /.nyc_output
@@ -33,6 +36,7 @@ lerna-debug.log*
 
 # IDE - VSCode
 .vscode/*
+.vscode
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json

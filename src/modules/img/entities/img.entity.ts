@@ -1,5 +1,6 @@
 import { ProductImg } from '@prisma/client';
 import { ImgDto } from '../dto/img.dto';
+import { randomUUID } from 'crypto';
 
 export class ImgEntity implements ProductImg {
   id: string;
@@ -9,18 +10,25 @@ export class ImgEntity implements ProductImg {
   updatedAt: Date;
   deletedAt: Date;
 
-  public static toEntity(img: ImgDto, productId: string): ImgEntity {
+  public static toEntity(
+    img: Express.Multer.File,
+    productId: string,
+  ): ImgEntity {
     return Object.assign(new ImgEntity(), {
-      ...img,
+      id: randomUUID(),
+      imgUrl: `${process.env.IMG_BASE_URL}/${img.filename}`,
       productId,
     });
   }
 
-  public static toEntityArray(img: ImgDto[], productId: string): ImgEntity[] {
+  public static toEntityArray(
+    img: Express.Multer.File[],
+    productId: string,
+  ): ImgEntity[] {
     return img.map((img) => {
       return Object.assign(new ImgEntity(), {
-        id: img.id,
-        imgUrl: img.url,
+        id: randomUUID(),
+        imgUrl: `${process.env.IMG_BASE_URL}/${img.filename}`,
         productId,
       });
     });
